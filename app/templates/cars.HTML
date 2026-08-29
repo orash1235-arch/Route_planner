@@ -14,12 +14,24 @@
         <div class="flex items-center gap-3">
             <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 border border-transparent dark:border-slate-600">
                 <span data-en="Total Vehicles:" data-he="סך רכבים:">Total Vehicles:</span>
-                <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ cars | length }}</span>
+                <span class="font-bold text-indigo-600 dark:text-indigo-400" id="totalVehicleCount">{{ cars | length }}</span>
             </span>
+            <button onclick="exportToCSV()" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm border border-slate-200 dark:border-slate-600">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span data-en="Export CSV" data-he="ייצוא CSV">Export CSV</span>
+            </button>
             <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <span>+</span>
                 <span data-en="Add Vehicle" data-he="הוסף רכב">Add Vehicle</span>
             </button>
+        </div>
+    </div>
+
+    <!-- Search & Controls Bar -->
+    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="relative w-full sm:w-80">
+            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search by plate, model, or status..." class="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 outline-none transition">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </div>
     </div>
 
@@ -103,6 +115,11 @@
                             </td>
                         </tr>
                     {% endfor %}
+                    <tr id="noResultsRow" class="hidden">
+                        <td colspan="6" class="py-8 text-center text-slate-400 dark:text-slate-500 text-xs" data-en="No matching vehicles found." data-he="לא נמצאו רכבים תואמים.">
+                            No matching vehicles found.
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -189,7 +206,6 @@
         document.getElementById('edit_current_km').value = km;
         document.getElementById('edit_last_garage_check').value = checkDate;
 
-        // Set action dynamically to /cars/edit/<license_plate>
         document.getElementById('editCarForm').action = "/cars/edit/" + encodeURIComponent(plate);
 
         document.getElementById('editCarModal').classList.remove('hidden');
@@ -199,6 +215,70 @@
     function closeEditModal() {
         document.getElementById('editCarModal').classList.add('hidden');
         document.getElementById('editCarModal').classList.remove('flex');
+    }
+
+    // Live Search / Filter Logic
+    function filterTable() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#carsTable tbody tr[data-plate]');
+        const noResultsRow = document.getElementById('noResultsRow');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const plate = row.dataset.plate.toLowerCase();
+            const model = row.dataset.model.toLowerCase();
+            const km = row.dataset.km.toLowerCase();
+            const check = row.dataset.check.toLowerCase();
+            const status = row.dataset.status.toLowerCase();
+
+            if (plate.includes(query) || model.includes(query) || km.includes(query) || check.includes(query) || status.includes(query)) {
+                row.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                row.classList.add('hidden');
+            }
+        });
+
+        if (noResultsRow) {
+            if (visibleCount === 0 && rows.length > 0) {
+                noResultsRow.classList.remove('hidden');
+            } else {
+                noResultsRow.classList.add('hidden');
+            }
+        }
+    }
+
+    // CSV Export Logic (exports visible filtered rows or all rows if no filter applied)
+    function exportToCSV() {
+        const rows = document.querySelectorAll('#carsTable tbody tr[data-plate]');
+        if (rows.length === 0) return;
+
+        const csvRows = [
+            ['License Plate', 'Vehicle Model', 'Current KM', 'Last Garage Check', 'Status']
+        ];
+
+        rows.forEach(row => {
+            if (!row.classList.contains('hidden')) {
+                csvRows.push([
+                    `"${row.dataset.plate}"`,
+                    `"${row.dataset.model}"`,
+                    `"${row.dataset.km}"`,
+                    `"${row.dataset.check || 'N/A'}"`,
+                    `"${row.dataset.status}"`
+                ]);
+            }
+        });
+
+        const csvContent = "\uFEFF" + csvRows.map(e => e.join(',')).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `fleet_vehicles_${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
     // Table Sorting Logic
@@ -242,6 +322,10 @@
         });
 
         rows.forEach(row => tbody.appendChild(row));
+        
+        // Re-append noResultsRow at bottom if present
+        const noResultsRow = document.getElementById('noResultsRow');
+        if (noResultsRow) tbody.appendChild(noResultsRow);
     }
 </script>
 {% endblock %}
