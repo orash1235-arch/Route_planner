@@ -4,17 +4,17 @@
 <div class="space-y-6">
     
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
         <div>
-            <h1 class="text-xl font-bold text-slate-900" data-en="Fleet Vehicles" data-he="צי רכבים">Fleet Vehicles</h1>
-            <p class="text-xs text-slate-500 mt-1" data-en="Manage and view the operational status of all vehicles" data-he="ניהול וצפייה בסטטוס התפעולי של כל הרכבים">
+            <h1 class="text-xl font-bold text-slate-900 dark:text-white" data-en="Fleet Vehicles" data-he="צי רכבים">Fleet Vehicles</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-en="Manage and view the operational status of all vehicles" data-he="ניהול וצפייה בסטטוס התפעולי של כל הרכבים">
                 Manage and view the operational status of all vehicles
             </p>
         </div>
         <div class="flex items-center gap-3">
-            <span class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold flex items-center gap-1">
+            <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 border border-transparent dark:border-slate-600">
                 <span data-en="Total Vehicles:" data-he="סך רכבים:">Total Vehicles:</span>
-                <span class="font-bold text-indigo-600">{{ cars | length }}</span>
+                <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ cars | length }}</span>
             </span>
             <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <span>+</span>
@@ -24,65 +24,65 @@
     </div>
 
     <!-- Vehicles Table / List Card -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse" id="carsTable">
                 <thead>
-                    <tr class="bg-slate-50 text-slate-600 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200">
-                        <th onclick="sortTable(0, 'string')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 transition select-none">
+                    <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+                        <th onclick="sortTable(0, 'string')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
                                 <span data-en="License Plate" data-he="מספר רישוי">License Plate</span>
-                                <span class="text-slate-400 text-[10px] ml-1">⇅</span>
+                                <span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
-                        <th onclick="sortTable(1, 'string')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 transition select-none">
+                        <th onclick="sortTable(1, 'string')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
                                 <span data-en="Vehicle Model" data-he="דגם רכב">Vehicle Model</span>
-                                <span class="text-slate-400 text-[10px] ml-1">⇅</span>
+                                <span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
-                        <th onclick="sortTable(2, 'number')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 transition select-none">
+                        <th onclick="sortTable(2, 'number')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
                                 <span data-en="Current KM" data-he="קילומטראז'">Current KM</span>
-                                <span class="text-slate-400 text-[10px] ml-1">⇅</span>
+                                <span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
-                        <th onclick="sortTable(3, 'date')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 transition select-none">
+                        <th onclick="sortTable(3, 'date')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
                                 <span data-en="Last Garage Check" data-he="בדיקת מוסך אחרונה">Last Garage Check</span>
-                                <span class="text-slate-400 text-[10px] ml-1">⇅</span>
+                                <span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
-                        <th onclick="sortTable(4, 'string')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 transition select-none">
+                        <th onclick="sortTable(4, 'string')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
                                 <span data-en="Status" data-he="סטטוס">Status</span>
-                                <span class="text-slate-400 text-[10px] ml-1">⇅</span>
+                                <span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
                         <th class="py-3 px-4 text-right" data-en="Actions" data-he="פעולות">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 text-xs text-slate-700">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-xs text-slate-700 dark:text-slate-300">
                     {% for car in cars %}
-                        <tr class="hover:bg-slate-50/80 transition"
+                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-700/40 transition"
                             data-plate="{{ car.license_plate }}"
                             data-model="{{ car.car_type }}"
                             data-km="{{ car.current_km or 0 }}"
                             data-check="{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else '' }}"
                             data-status="{{ 'On Ride' if car.is_on_ride else 'Available' }}">
                             
-                            <td class="py-3 px-4 font-mono font-bold text-slate-900">{{ car.license_plate }}</td>
+                            <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">{{ car.license_plate }}</td>
                             <td class="py-3 px-4 font-medium">{{ car.car_type }}</td>
                             <td class="py-3 px-4">{{ "{:,}".format(car.current_km) if car.current_km else '0' }} km</td>
-                            <td class="py-3 px-4 text-slate-500">{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else 'N/A' }}</td>
+                            <td class="py-3 px-4 text-slate-500 dark:text-slate-400">{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else 'N/A' }}</td>
                             <td class="py-3 px-4">
                                 {% if car.is_on_ride %}
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60">
                                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
                                         <span data-en="On Ride" data-he="בנסיעה">On Ride</span>
                                     </span>
                                 {% else %}
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                         <span data-en="Available" data-he="זמין">Available</span>
                                     </span>
@@ -90,7 +90,7 @@
                             </td>
                             <td class="py-3 px-4 text-right">
                                 <button onclick="openEditModal('{{ car.license_plate }}', '{{ car.car_type }}', '{{ car.current_km or 0 }}', '{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else '' }}')" 
-                                        class="text-indigo-600 hover:text-indigo-900 font-medium" 
+                                        class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 font-medium" 
                                         data-en="Edit" data-he="ערוך">
                                     Edit
                                 </button>
@@ -98,7 +98,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="6" class="py-8 text-center text-slate-400 text-xs" data-en="No vehicles found in the fleet database." data-he="לא נמצאו רכבים במאגר הנתונים.">
+                            <td colspan="6" class="py-8 text-center text-slate-400 dark:text-slate-500 text-xs" data-en="No vehicles found in the fleet database." data-he="לא נמצאו רכבים במאגר הנתונים.">
                                 No vehicles found in the fleet database.
                             </td>
                         </tr>
@@ -110,31 +110,31 @@
 </div>
 
 <!-- Add Vehicle Modal -->
-<div id="addCarModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-            <h3 class="text-sm font-bold text-slate-800" data-en="Add New Vehicle" data-he="הוסף רכב חדש">Add New Vehicle</h3>
-            <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+<div id="addCarModal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-white" data-en="Add New Vehicle" data-he="הוסף רכב חדש">Add New Vehicle</h3>
+            <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none">&times;</button>
         </div>
         <form action="{{ url_for('cars.list_cars') }}" method="POST" class="p-6 space-y-4 text-xs">
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="License Plate *" data-he="מספר רישוי *">License Plate *</label>
-                <input type="text" name="license_plate" required placeholder="e.g. 123-45-678" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="License Plate *" data-he="מספר רישוי *">License Plate *</label>
+                <input type="text" name="license_plate" required placeholder="e.g. 123-45-678" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Vehicle Model *" data-he="דגם רכב *">Vehicle Model *</label>
-                <input type="text" name="car_type" required placeholder="e.g. Toyota Hilux" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Vehicle Model *" data-he="דגם רכב *">Vehicle Model *</label>
+                <input type="text" name="car_type" required placeholder="e.g. Toyota Hilux" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Current KM" data-he="קילומטראז'">Current KM</label>
-                <input type="number" name="current_km" placeholder="e.g. 45000" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Current KM" data-he="קילומטראז'">Current KM</label>
+                <input type="number" name="current_km" placeholder="e.g. 45000" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Last Garage Check" data-he="בדיקת מוסך אחרונה">Last Garage Check</label>
-                <input type="date" name="last_garage_check" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Last Garage Check" data-he="בדיקת מוסך אחרונה">Last Garage Check</label>
+                <input type="date" name="last_garage_check" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
-            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 font-medium" data-en="Cancel" data-he="ביטול">Cancel</button>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium" data-en="Cancel" data-he="ביטול">Cancel</button>
                 <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium" data-en="Save Vehicle" data-he="שמור רכב">Save Vehicle</button>
             </div>
         </form>
@@ -142,31 +142,31 @@
 </div>
 
 <!-- Edit Vehicle Modal -->
-<div id="editCarModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-            <h3 class="text-sm font-bold text-slate-800" data-en="Edit Vehicle" data-he="ערוך רכב">Edit Vehicle</h3>
-            <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+<div id="editCarModal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-white" data-en="Edit Vehicle" data-he="ערוך רכב">Edit Vehicle</h3>
+            <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none">&times;</button>
         </div>
         <form id="editCarForm" method="POST" class="p-6 space-y-4 text-xs">
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="License Plate" data-he="מספר רישוי">License Plate</label>
-                <input type="text" id="edit_license_plate" disabled class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-500 font-mono font-bold cursor-not-allowed outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="License Plate" data-he="מספר רישוי">License Plate</label>
+                <input type="text" id="edit_license_plate" disabled class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 font-mono font-bold cursor-not-allowed outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Vehicle Model *" data-he="דגם רכב *">Vehicle Model *</label>
-                <input type="text" name="car_type" id="edit_car_type" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Vehicle Model *" data-he="דגם רכב *">Vehicle Model *</label>
+                <input type="text" name="car_type" id="edit_car_type" required class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Current KM" data-he="קילומטראז'">Current KM</label>
-                <input type="number" name="current_km" id="edit_current_km" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Current KM" data-he="קילומטראז'">Current KM</label>
+                <input type="number" name="current_km" id="edit_current_km" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Last Garage Check" data-he="בדיקת מוסך אחרונה">Last Garage Check</label>
-                <input type="date" name="last_garage_check" id="edit_last_garage_check" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Last Garage Check" data-he="בדיקת מוסך אחרונה">Last Garage Check</label>
+                <input type="date" name="last_garage_check" id="edit_last_garage_check" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
-            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 font-medium" data-en="Cancel" data-he="ביטול">Cancel</button>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium" data-en="Cancel" data-he="ביטול">Cancel</button>
                 <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium" data-en="Update Vehicle" data-he="עדכן רכב">Update Vehicle</button>
             </div>
         </form>
