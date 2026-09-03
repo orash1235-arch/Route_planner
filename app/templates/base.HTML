@@ -17,10 +17,12 @@
 <!-- Sticky Navigation Header -->
 <nav class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md text-white px-6 py-3 flex justify-between items-center shadow-lg border-b border-slate-800">
     <div class="flex items-center space-x-6">
-        <a href="{{ url_for('trips.list_trips') }}" class="text-xl font-bold tracking-wide text-indigo-400 flex items-center gap-2">
+        <a href="{{ url_for('trips.list_trips') if current_user.is_authenticated else '#' }}" class="text-xl font-bold tracking-wide text-indigo-400 flex items-center gap-2">
             ⚡ RoutePlanner
         </a>
-        {% if session.get('user') %}
+        
+        <!-- Navigation Links: Only show when authenticated AND not on login/register pages -->
+        {% if current_user.is_authenticated and request.endpoint not in ['auth.login', 'auth.register'] %}
             <a href="{{ url_for('trips.list_trips') }}" class="hover:text-indigo-300 transition text-sm" data-en="Trips" data-he="נסיעות">Trips</a>
             <a href="{{ url_for('sites.list_sites') }}" class="hover:text-indigo-300 transition text-sm" data-en="Sites" data-he="אתרים">Sites</a>
             <a href="{{ url_for('cars.list_cars') }}" class="hover:text-indigo-300 transition text-sm" data-en="Cars" data-he="רכבים">Cars</a>
@@ -73,22 +75,31 @@
             </div>
         </div>
 
-        {% if session.get('user') %}
+        <!-- USER PROFILE & LOGOUT / LOGIN AREA -->
+        {% if current_user.is_authenticated %}
             <div class="flex items-center space-x-3 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
                 <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-xs border border-indigo-400">
-                    {{ session['user']['name'][0] | upper }}
+                    {{ (current_user.full_name or current_user.id)[0] | upper }}
                 </div>
                 <div class="text-right leading-tight">
-                    <p class="text-xs font-bold text-white">{{ session['user']['name'] }}</p>
-                    <p class="text-[10px] text-slate-400">ID: {{ session['user']['id'] }}</p>
-                    <p class="text-[10px] text-indigo-400 font-mono">Code: {{ session['user']['invitation_code'] }}</p>
+                    <p class="text-xs font-bold text-white">{{ current_user.full_name or current_user.id }}</p>
+                    <p class="text-[10px] text-slate-400">ID: {{ current_user.id }}</p>
+                    {% if current_user.used_invitation_code %}
+                        <p class="text-[10px] text-indigo-400 font-mono">Code: {{ current_user.used_invitation_code }}</p>
+                    {% endif %}
                 </div>
             </div>
             <a href="{{ url_for('auth.logout') }}" class="text-xs text-slate-400 hover:text-white transition" data-en="Logout" data-he="התנתק">Logout</a>
         {% else %}
             <div class="space-x-2 text-xs">
-                <a href="{{ url_for('auth.login') }}" class="text-slate-300 hover:text-white px-2 py-1" data-en="Log In" data-he="התחבר">Log In</a>
-                <a href="{{ url_for('auth.register') }}" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition" data-en="Register" data-he="הרשם">Register</a>
+                {% if request.endpoint == 'auth.login' %}
+                    <a href="{{ url_for('auth.register') }}" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition" data-en="Register" data-he="הרשם">Register</a>
+                {% elif request.endpoint == 'auth.register' %}
+                    <a href="{{ url_for('auth.login') }}" class="text-slate-300 hover:text-white px-2 py-1" data-en="Log In" data-he="התחבר">Log In</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="text-slate-300 hover:text-white px-2 py-1" data-en="Log In" data-he="התחבר">Log In</a>
+                    <a href="{{ url_for('auth.register') }}" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-medium transition" data-en="Register" data-he="הרשם">Register</a>
+                {% endif %}
             </div>
         {% endif %} 
     </div>

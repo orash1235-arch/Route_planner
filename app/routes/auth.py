@@ -11,6 +11,10 @@ VALID_INVITATION_CODES = ["OR2026", "FLASK-ADMIN", "TRIP-TEAM"]
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
+    # If user hits register page while authenticated, log them out first or redirect
+    if current_user.is_authenticated and request.method == 'GET':
+        logout_user()
+
     form_data = {
         'user_id': '',
         'full_name': '',
@@ -71,6 +75,10 @@ def register():
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    # If user hits login page while authenticated, log them out first or redirect
+    if current_user.is_authenticated and request.method == 'GET':
+        logout_user()
+
     user_id_val = ''
     if request.method == 'POST':
         user_id = request.form.get('user_id', '').strip()
