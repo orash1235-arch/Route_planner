@@ -4,18 +4,28 @@
 <div class="space-y-6">
     
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
         <div>
-            <h1 class="text-xl font-bold text-slate-900" data-en="Available Sites" data-he="אתרים זמינים">Available Sites</h1>
-            <p class="text-xs text-slate-500 mt-1" data-en="Manage site locations, sector assignments, and GPS coordinates" data-he="ניהול מיקומי אתרים, שיוך גזרות וקואורדינטות GPS">
+            <h1 class="text-xl font-bold text-slate-900 dark:text-white" data-en="Available Sites" data-he="אתרים זמינים">Available Sites</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-en="Manage site locations, sector assignments, and GPS coordinates" data-he="ניהול מיקומי אתרים, שיוך גזרות וקואורדינטות GPS">
                 Manage site locations, sector assignments, and GPS coordinates
             </p>
         </div>
-        <div class="flex items-center gap-3">
-            <span class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold flex items-center gap-1">
+        <div class="flex items-center gap-3 flex-wrap">
+            <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1">
                 <span data-en="Total Sites:" data-he="סה&quot;כ אתרים:">Total Sites:</span>
-                <span class="font-bold text-indigo-600" id="totalSitesCount">{{ sites | length }}</span>
+                <span class="font-bold text-indigo-600 dark:text-indigo-400" id="totalSitesCount">{{ sites | length }}</span>
             </span>
+
+           
+
+            <!-- Export to CSV Button -->
+            <button onclick="exportSitesToCSV()" class="bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span data-en="Export CSV" data-he="ייצוא CSV">Export CSV</span>
+            </button>
+
+            <!-- Add Site Button -->
             <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <span>+</span>
                 <span data-en="Add Site" data-he="הוסף אתר">Add Site</span>
@@ -24,7 +34,7 @@
     </div>
 
     <!-- Search Bar -->
-    <div class="flex items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+    <div class="flex items-center bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
         <div class="relative w-full max-w-md">
             <input type="text" 
                    id="siteSearchInput" 
@@ -32,8 +42,8 @@
                    placeholder="Search by ID, name, or sector..." 
                    data-en-placeholder="Search by ID, name, or sector..." 
                    data-he-placeholder="חפש לפי מזהה, שם, או גזרה..."
-                   class="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                   class="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition placeholder-slate-400 dark:placeholder-slate-400">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
@@ -42,31 +52,31 @@
     </div>
 
     <!-- Sites Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse" id="sitesTable">
                 <thead>
-                    <tr class="bg-slate-50 text-slate-600 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200">
+                    <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
                         <th class="w-8 py-3 px-2"></th>
-                        <th onclick="sortTable(1)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 transition select-none">
+                        <th onclick="sortTable(1)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
                                 <span data-en="Location ID" data-he="מזהה מיקום">Location ID</span>
                                 <span class="text-slate-400 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
-                        <th onclick="sortTable(2)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 transition select-none">
+                        <th onclick="sortTable(2)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
                                 <span data-en="Site Name" data-he="שם האתר">Site Name</span>
                                 <span class="text-slate-400 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
-                        <th onclick="sortTable(3)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 transition select-none">
+                        <th onclick="sortTable(3)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
                                 <span data-en="GPS / Coordinates" data-he="קואורדינטות GPS">GPS / Coordinates</span>
                                 <span class="text-slate-400 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
-                        <th onclick="sortTable(4)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 transition select-none">
+                        <th onclick="sortTable(4)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
                                 <span data-en="Sector Location" data-he="גזרה / מיקום">Sector Location</span>
                                 <span class="text-slate-400 text-[10px] ml-1">⇅</span>
@@ -75,41 +85,43 @@
                         <th class="py-3 px-4 text-right" data-en="Actions" data-he="פעולות">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 text-xs text-slate-700">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 text-xs text-slate-700 dark:text-slate-300">
                     {% for site in sites %}
                         <!-- Primary Row -->
-                        <tr class="site-row hover:bg-slate-50/80 cursor-pointer transition select-none"
+                        <tr class="site-row hover:bg-slate-50/80 dark:hover:bg-slate-700/40 cursor-pointer transition select-none"
                             onclick="toggleDetails('{{ site.loc_id }}')"
                             data-locid="{{ site.loc_id }}"
                             data-name="{{ site.name|e }}"
                             data-gpt="{{ site.gpt_coordinates or '' }}"
-                            data-sector="{{ site.sector or '' }}">
+                            data-sector="{{ site.sector or '' }}"
+                            data-food="{{ site.food or '' }}"
+                            data-rating="{{ site.food_rating or '' }}">
                             
                             <td class="py-3 px-2 text-center text-slate-400">
                                 <svg id="chevron-{{ site.loc_id }}" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
                             </td>
-                            <td class="py-3 px-4 font-mono font-bold text-slate-900">{{ site.loc_id }}</td>
-                            <td class="py-3 px-4 font-semibold text-slate-800">{{ site.name }}</td>
-                            <td class="py-3 px-4 font-mono text-slate-600">{{ site.gpt_coordinates or 'N/A' }}</td>
+                            <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-indigo-300">{{ site.loc_id }}</td>
+                            <td class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200">{{ site.name }}</td>
+                            <td class="py-3 px-4 font-mono text-slate-600 dark:text-slate-400">{{ site.gpt_coordinates or 'N/A' }}</td>
                             
                             <!-- Sector Column with Glow Effect -->
                             <td class="py-3 px-4">
                                 {% if site.sector == "קו כחול" %}
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-600 border border-blue-200 shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 shadow-[0_0_8px_rgba(59,130,246,0.3)]">
                                         {{ site.sector }}
                                     </span>
                                 {% elif site.sector == "עמקים וים" %}
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-[0_0_8px_rgba(16,185,129,0.5)]">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 shadow-[0_0_8px_rgba(16,185,129,0.3)]">
                                         {{ site.sector }}
                                     </span>
                                 {% elif site.sector == "רמת הגולן" %}
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-300 shadow-[0_0_8px_rgba(217,119,6,0.4)]">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800 shadow-[0_0_8px_rgba(217,119,6,0.3)]">
                                         {{ site.sector }}
                                     </span>
                                 {% else %}
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
                                         {{ site.sector or 'לא הוגדר' }}
                                     </span>
                                 {% endif %}
@@ -117,7 +129,7 @@
 
                             <td class="py-3 px-4 text-right" onclick="event.stopPropagation()">
                                 <button onclick="openEditModal('{{ site.loc_id }}', '{{ site.name|e }}', '{{ site.gpt_coordinates or '' }}', '{{ site.sector or '' }}', '{{ site.food or '' }}', '{{ site.food_rating or '' }}')" 
-                                        class="text-indigo-600 hover:text-indigo-900 font-medium" 
+                                        class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium" 
                                         data-en="Edit" data-he="ערוך">
                                     Edit
                                 </button>
@@ -125,65 +137,65 @@
                         </tr>
 
                         <!-- Extended Details Drawer Row -->
-                        <tr id="details-{{ site.loc_id }}" class="hidden bg-slate-50/60 border-y border-slate-200/80">
+                        <tr id="details-{{ site.loc_id }}" class="hidden bg-slate-50/60 dark:bg-slate-900/40 border-y border-slate-200/80 dark:border-slate-700/80">
                             <td colspan="6" class="p-4">
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-inner">
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner">
                                     
                                     <!-- Info Block -->
                                     <div class="space-y-2">
-                                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider border-b border-slate-100 pb-1" data-en="Site Information" data-he="פרטי האתר">Site Information</h4>
+                                        <h4 class="font-bold text-slate-800 dark:text-slate-200 text-xs uppercase tracking-wider border-b border-slate-100 dark:border-slate-700 pb-1" data-en="Site Information" data-he="פרטי האתר">Site Information</h4>
                                         <div>
-                                            <span class="text-slate-400 block text-[10px]" data-en="Location ID" data-he="מזהה מיקום">Location ID:</span>
-                                            <span class="font-mono font-bold text-slate-900">{{ site.loc_id }}</span>
+                                            <span class="text-slate-400 dark:text-slate-500 block text-[10px]" data-en="Location ID" data-he="מזהה מיקום">Location ID:</span>
+                                            <span class="font-mono font-bold text-slate-900 dark:text-indigo-300">{{ site.loc_id }}</span>
                                         </div>
                                         <div>
-                                            <span class="text-slate-400 block text-[10px]" data-en="Site Name" data-he="שם האתר">Site Name:</span>
-                                            <span class="font-semibold text-slate-800">{{ site.name }}</span>
+                                            <span class="text-slate-400 dark:text-slate-500 block text-[10px]" data-en="Site Name" data-he="שם האתר">Site Name:</span>
+                                            <span class="font-semibold text-slate-800 dark:text-slate-200">{{ site.name }}</span>
                                         </div>
                                         <div>
-                                            <span class="text-slate-400 block text-[10px]" data-en="Assigned Sector" data-he="גזרה משויכת">Assigned Sector:</span>
-                                            <span class="font-medium text-slate-700">{{ site.sector or 'None' }}</span>
+                                            <span class="text-slate-400 dark:text-slate-500 block text-[10px]" data-en="Assigned Sector" data-he="גזרה משויכת">Assigned Sector:</span>
+                                            <span class="font-medium text-slate-700 dark:text-slate-300">{{ site.sector or 'None' }}</span>
                                         </div>
                                     </div>
 
                                     <!-- Food & Catering Block -->
                                     <div class="space-y-2">
-                                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider border-b border-slate-100 pb-1" data-en="Food & Catering" data-he="אוכל והסעדה">Food & Catering</h4>
+                                        <h4 class="font-bold text-slate-800 dark:text-slate-200 text-xs uppercase tracking-wider border-b border-slate-100 dark:border-slate-700 pb-1" data-en="Food & Catering" data-he="אוכל והסעדה">Food & Catering</h4>
                                         <div>
-                                            <span class="text-slate-400 block text-[10px]" data-en="Food Details" data-he="פרטי אוכל">Food Details:</span>
-                                            <span class="text-slate-800 font-medium">{{ site.food or 'לא צוין' }}</span>
+                                            <span class="text-slate-400 dark:text-slate-500 block text-[10px]" data-en="Food Details" data-he="פרטי אוכל">Food Details:</span>
+                                            <span class="text-slate-800 dark:text-slate-200 font-medium">{{ site.food or 'לא צוין' }}</span>
                                         </div>
                                         <div>
-                                            <span class="text-slate-400 block text-[10px]" data-en="Rating" data-he="דירוג">Rating:</span>
+                                            <span class="text-slate-400 dark:text-slate-500 block text-[10px]" data-en="Rating" data-he="דירוג">Rating:</span>
                                             {% if site.food_rating %}
                                                 <div class="flex items-center gap-0.5 mt-0.5 text-amber-400">
                                                     {% for i in range(1, 6) %}
                                                         {% if i <= site.food_rating %}
                                                             <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                                         {% else %}
-                                                            <svg class="w-4 h-4 text-slate-200 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                                            <svg class="w-4 h-4 text-slate-200 dark:text-slate-600 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                                         {% endif %}
                                                     {% endfor %}
-                                                    <span class="text-xs text-slate-500 font-bold ml-1">({{ site.food_rating }}/5)</span>
+                                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-bold ml-1">({{ site.food_rating }}/5)</span>
                                                 </div>
                                             {% else %}
-                                                <span class="text-slate-400 italic text-xs">אין דירוג</span>
+                                                <span class="text-slate-400 dark:text-slate-500 italic text-xs">אין דירוג</span>
                                             {% endif %}
                                         </div>
                                     </div>
 
                                     <!-- GPS & Navigation Block -->
                                     <div class="space-y-2">
-                                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider border-b border-slate-100 pb-1" data-en="Coordinates & Maps" data-he="קואורדינטות ומפות">Coordinates & Maps</h4>
+                                        <h4 class="font-bold text-slate-800 dark:text-slate-200 text-xs uppercase tracking-wider border-b border-slate-100 dark:border-slate-700 pb-1" data-en="Coordinates & Maps" data-he="קואורדינטות ומפות">Coordinates & Maps</h4>
                                         <div>
-                                            <span class="text-slate-400 block text-[10px]" data-en="Raw Coordinates" data-he="קואורדינטות">Raw Coordinates:</span>
-                                            <span class="font-mono text-slate-800">{{ site.gpt_coordinates or 'N/A' }}</span>
+                                            <span class="text-slate-400 dark:text-slate-500 block text-[10px]" data-en="Raw Coordinates" data-he="קואורדינטות">Raw Coordinates:</span>
+                                            <span class="font-mono text-slate-800 dark:text-slate-300">{{ site.gpt_coordinates or 'N/A' }}</span>
                                         </div>
                                         {% if site.gpt_coordinates %}
                                         <div class="pt-1">
                                             <a href="https://www.google.com/maps/search/?api=1&query={{ site.gpt_coordinates }}" 
                                                target="_blank" 
-                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold rounded-lg text-[11px] border border-indigo-200 transition">
+                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-semibold rounded-lg text-[11px] border border-indigo-200 dark:border-indigo-800 transition">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -197,22 +209,22 @@
                                     <!-- Quick Actions Block -->
                                     <div class="space-y-2 flex flex-col justify-between">
                                         <div>
-                                            <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider border-b border-slate-100 pb-1" data-en="Quick Management" data-he="ניהול מהיר">Quick Management</h4>
-                                            <p class="text-[11px] text-slate-500 mt-1" data-en="Update configuration or site attributes." data-he="עדכון הגדרות ומאפייני האתר.">
+                                            <h4 class="font-bold text-slate-800 dark:text-slate-200 text-xs uppercase tracking-wider border-b border-slate-100 dark:border-slate-700 pb-1" data-en="Quick Management" data-he="ניהול מהיר">Quick Management</h4>
+                                            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1" data-en="Update configuration or site attributes." data-he="עדכון הגדרות ומאפייני האתר.">
                                                 Update configuration or site attributes.
                                             </p>
                                         </div>
                                         <div class="pt-2 flex flex-col gap-2">
                                             <!-- Edit Button -->
                                             <button onclick="openEditModal('{{ site.loc_id }}', '{{ site.name|e }}', '{{ site.gpt_coordinates or '' }}', '{{ site.sector or '' }}', '{{ site.food or '' }}', '{{ site.food_rating or '' }}')" 
-                                                    class="w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-1.5 px-3 rounded-lg transition text-xs flex items-center justify-center gap-1.5 shadow-sm">
+                                                    class="w-full bg-slate-800 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-medium py-1.5 px-3 rounded-lg transition text-xs flex items-center justify-center gap-1.5 shadow-sm">
                                                 <span data-en="Edit Site Details" data-he="ערוך פרטי אתר">Edit Site Details</span>
                                             </button>
                                             
                                             <!-- Delete Form & Button -->
                                             <form action="{{ url_for('sites.delete_site', loc_id=site.loc_id) }}" method="POST" onsubmit="return confirm('האם אתה בטוח שברצונך למחוק את האתר?');">
                                                 <button type="submit" 
-                                                        class="w-full bg-rose-600 hover:bg-rose-700 text-white font-medium py-1.5 px-3 rounded-lg transition text-xs flex items-center justify-center gap-1.5 shadow-sm">
+                                                        class="w-full bg-rose-600 hover:bg-rose-700 dark:bg-rose-700 dark:hover:bg-rose-600 text-white font-medium py-1.5 px-3 rounded-lg transition text-xs flex items-center justify-center gap-1.5 shadow-sm">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>
@@ -227,13 +239,13 @@
                         </tr>
                     {% else %}
                         <tr id="noSitesRow">
-                            <td colspan="6" class="py-8 text-center text-slate-400 text-xs" data-en="No sites found in the database." data-he="לא נמצאו אתרים במאגר הנתונים.">
+                            <td colspan="6" class="py-8 text-center text-slate-400 dark:text-slate-500 text-xs" data-en="No sites found in the database." data-he="לא נמצאו אתרים במאגר הנתונים.">
                                 No sites found in the database.
                             </td>
                         </tr>
                     {% endfor %}
                     <tr id="noResultsRow" class="hidden">
-                        <td colspan="6" class="py-8 text-center text-slate-400 text-xs" data-en="No matching sites found." data-he="לא נמצאו אתרים תואמים.">
+                        <td colspan="6" class="py-8 text-center text-slate-400 dark:text-slate-500 text-xs" data-en="No matching sites found." data-he="לא נמצאו אתרים תואמים.">
                             No matching sites found.
                         </td>
                     </tr>
@@ -245,27 +257,27 @@
 
 <!-- Add Site Modal -->
 <div id="addSiteModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-            <h3 class="text-sm font-bold text-slate-800" data-en="Add New Site" data-he="הוסף אתר חדש">Add New Site</h3>
-            <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700/50">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200" data-en="Add New Site" data-he="הוסף אתר חדש">Add New Site</h3>
+            <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none">&times;</button>
         </div>
         <form action="{{ url_for('sites.list_sites') }}" method="POST" class="p-6 space-y-4 text-xs">
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Location ID *" data-he="מזהה מיקום *">Location ID *</label>
-                <input type="text" name="loc_id" required placeholder="e.g. LOC-0102" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Location ID *" data-he="מזהה מיקום *">Location ID *</label>
+                <input type="text" name="loc_id" required placeholder="e.g. LOC-0102" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Site Name *" data-he="שם האתר *">Site Name *</label>
-                <input type="text" name="name" required placeholder="e.g. מוצב אלון" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Site Name *" data-he="שם האתר *">Site Name *</label>
+                <input type="text" name="name" required placeholder="e.g. מוצב אלון" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="GPS / Coordinates" data-he="קואורדינטות GPS">GPS / Coordinates</label>
-                <input type="text" name="gpt_coordinates" placeholder="e.g. 33.0853, 35.1818" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="GPS / Coordinates" data-he="קואורדינטות GPS">GPS / Coordinates</label>
+                <input type="text" name="gpt_coordinates" placeholder="e.g. 33.0853, 35.1818" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Sector Location *" data-he="גזרה / מיקום *">Sector Location *</label>
-                <select name="sector" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Sector Location *" data-he="גזרה / מיקום *">Sector Location *</label>
+                <select name="sector" required class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
                     <option value="" disabled selected data-en="Select a sector" data-he="בחר גזרה">Select a sector</option>
                     {% for sec in sectors %}
                         <option value="{{ sec }}">{{ sec }}</option>
@@ -273,12 +285,12 @@
                 </select>
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Food Details (Optional)" data-he="פרטי אוכל (אופציונלי)">Food Details</label>
-                <input type="text" name="food" placeholder="e.g. קייטרינג בשרי, חדר אוכל" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Food Details (Optional)" data-he="פרטי אוכל (אופציונלי)">Food Details</label>
+                <input type="text" name="food" placeholder="e.g. קייטרינג בשרי, חדר אוכל" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Food Rating (1-5)" data-he="דירוג אוכל (1-5)">Food Rating</label>
-                <select name="food_rating" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Food Rating (1-5)" data-he="דירוג אוכל (1-5)">Food Rating</label>
+                <select name="food_rating" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
                     <option value="">לא לדרג</option>
                     <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
                     <option value="4">⭐⭐⭐⭐ (4/5)</option>
@@ -287,8 +299,8 @@
                     <option value="1">⭐ (1/5)</option>
                 </select>
             </div>
-            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 font-medium" data-en="Cancel" data-he="ביטול">Cancel</button>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onclick="closeAddModal()" class="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium" data-en="Cancel" data-he="ביטול">Cancel</button>
                 <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium" data-en="Save Site" data-he="שמור אתר">Save Site</button>
             </div>
         </form>
@@ -297,39 +309,39 @@
 
 <!-- Edit Site Modal -->
 <div id="editSiteModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-            <h3 class="text-sm font-bold text-slate-800" data-en="Edit Site" data-he="ערוך אתר">Edit Site</h3>
-            <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700/50">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200" data-en="Edit Site" data-he="ערוך אתר">Edit Site</h3>
+            <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none">&times;</button>
         </div>
         <form id="editSiteForm" method="POST" class="p-6 space-y-4 text-xs">
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Location ID" data-he="מזהה מיקום">Location ID</label>
-                <input type="text" id="edit_loc_id" disabled class="w-full p-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-500 font-mono font-bold cursor-not-allowed outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Location ID" data-he="מזהה מיקום">Location ID</label>
+                <input type="text" id="edit_loc_id" disabled class="w-full p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900/50 text-slate-500 font-mono font-bold cursor-not-allowed outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Site Name *" data-he="שם האתר *">Site Name *</label>
-                <input type="text" name="name" id="edit_name" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Site Name *" data-he="שם האתר *">Site Name *</label>
+                <input type="text" name="name" id="edit_name" required class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="GPS / Coordinates" data-he="קואורדינטות GPS">GPS / Coordinates</label>
-                <input type="text" name="gpt_coordinates" id="edit_gpt_coordinates" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="GPS / Coordinates" data-he="קואורדינטות GPS">GPS / Coordinates</label>
+                <input type="text" name="gpt_coordinates" id="edit_gpt_coordinates" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Sector Location *" data-he="גזרה / מיקום *">Sector Location *</label>
-                <select name="sector" id="edit_sector" required class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Sector Location *" data-he="גזרה / מיקום *">Sector Location *</label>
+                <select name="sector" id="edit_sector" required class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
                     {% for sec in sectors %}
                         <option value="{{ sec }}">{{ sec }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Food Details" data-he="פרטי אוכל">Food Details</label>
-                <input type="text" name="food" id="edit_food" placeholder="e.g. קייטרינג בשרי, חדר אוכל" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Food Details" data-he="פרטי אוכל">Food Details</label>
+                <input type="text" name="food" id="edit_food" placeholder="e.g. קייטרינג בשרי, חדר אוכל" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
             <div>
-                <label class="block font-semibold text-slate-700 mb-1" data-en="Food Rating (1-5)" data-he="דירוג אוכל (1-5)">Food Rating</label>
-                <select name="food_rating" id="edit_food_rating" class="w-full p-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Food Rating (1-5)" data-he="דירוג אוכל (1-5)">Food Rating</label>
+                <select name="food_rating" id="edit_food_rating" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
                     <option value="">לא לדרג</option>
                     <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
                     <option value="4">⭐⭐⭐⭐ (4/5)</option>
@@ -338,8 +350,8 @@
                     <option value="1">⭐ (1/5)</option>
                 </select>
             </div>
-            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 font-medium" data-en="Cancel" data-he="ביטול">Cancel</button>
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium" data-en="Cancel" data-he="ביטול">Cancel</button>
                 <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium" data-en="Update Site" data-he="עדכן אתר">Update Site</button>
             </div>
         </form>
@@ -480,5 +492,50 @@
             noResultsRow.classList.toggle('hidden', visibleCount > 0 || rows.length === 0);
         }
     }
+    
+
+
+
+
+// CSV Export Script
+function exportSitesToCSV() {
+    const rows = document.querySelectorAll('#sitesTable .site-row');
+    const csvData = [
+        ['Location ID', 'Site Name', 'Coordinates', 'Sector', 'Food Details', 'Food Rating']
+    ];
+
+    rows.forEach(row => {
+        // Skip hidden/filtered rows from export
+        if (row.classList.contains('hidden')) return;
+
+        const locId = row.getAttribute('data-locid') || '';
+        const name = row.getAttribute('data-name') || '';
+        const gpt = row.getAttribute('data-gpt') || '';
+        const sector = row.getAttribute('data-sector') || '';
+        const food = row.getAttribute('data-food') || '';
+        const rating = row.getAttribute('data-rating') || '';
+
+        csvData.push([
+            `"${locId.replace(/"/g, '""')}"`,
+            `"${name.replace(/"/g, '""')}"`,
+            `"${gpt.replace(/"/g, '""')}"`,
+            `"${sector.replace(/"/g, '""')}"`,
+            `"${food.replace(/"/g, '""')}"`,
+            `"${rating.replace(/"/g, '""')}"`
+        ]);
+    });
+
+    // Add UTF-8 BOM so Excel opens Hebrew text correctly
+    const csvContent = '\uFEFF' + csvData.map(e => e.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `sites_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 </script>
 {% endblock %}

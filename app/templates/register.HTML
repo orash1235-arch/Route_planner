@@ -1,79 +1,79 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-md mx-auto mt-4 bg-white p-8 rounded-xl shadow-md border border-slate-200">
-    <h2 class="text-2xl font-bold text-slate-900 mb-1 text-center" data-en="Create Account" data-he="יצירת חשבון">
+<div class="max-w-md mx-auto mt-4 bg-white dark:bg-slate-800 p-8 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
+    <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-1 text-center" data-en="Create Account" data-he="יצירת חשבון">
         Create Account
     </h2>
-    <p class="text-xs text-slate-500 mb-6 text-center" data-en="Enter your details and invitation code to register." data-he="הזן את הפרטים שלך וקוד הזמנה כדי להירשם.">
+    <p class="text-xs text-slate-500 dark:text-slate-400 mb-6 text-center" data-en="Enter your details and invitation code to register." data-he="הזן את הפרטים שלך וקוד הזמנה כדי להירשם.">
         Enter your details and invitation code to register.
     </p>
 
     <form action="{{ url_for('auth.register') }}" method="POST" class="space-y-3">
         
         <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1" data-en="ID" data-he="תעודת זהות / מזהה">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-en="ID" data-he="תעודת זהות / מזהה">
                 ID
             </label>
             <input type="text" name="user_id" required placeholder="e.g. 215455544" data-en-placeholder="e.g. 215455544" data-he-placeholder="לדוגמה: 215455544"
                    value="{{ form_data.get('user_id', '') if form_data else '' }}"
-                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                   class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1" data-en="Full Name" data-he="שם מלא">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-en="Full Name" data-he="שם מלא">
                 Full Name
             </label>
             <input type="text" name="full_name" required placeholder="e.g. Alex Mercer" data-en-placeholder="e.g. Alex Mercer" data-he-placeholder="לדוגמה: ישראל ישראלי"
                    value="{{ form_data.get('full_name', '') if form_data else '' }}"
-                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                   class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
         </div>
 
         <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1" data-en="Phone Number" data-he="מספר טלפון">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-en="Phone Number" data-he="מספר טלפון">
                 Phone Number
             </label>
             <input type="tel" name="phone_number" required placeholder="e.g. 050-1234567" data-en-placeholder="e.g. 050-1234567" data-he-placeholder="לדוגמה: 050-1234567"
                    value="{{ form_data.get('phone_number', '') if form_data else '' }}"
-                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                   class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
         </div>
 
         <!-- Password Field -->
         <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1" data-en="Password" data-he="סיסמה">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-en="Password" data-he="סיסמה">
                 Password
             </label>
             <input type="password" name="password" required placeholder="••••••••"
-                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                   class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
         </div>
 
         <!-- Repeat Password Field -->
         <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1" data-en="Repeat Password" data-he="אימות סיסמה">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-en="Repeat Password" data-he="אימות סיסמה">
                 Repeat Password
             </label>
             <input type="password" name="repeat_password" required placeholder="••••••••"
-                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                   class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
         </div>
 
         <!-- Invitation Code Field -->
         <div>
-            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1" data-en="Invitation Code" data-he="קוד הזמנה">
+            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-1" data-en="Invitation Code" data-he="קוד הזמנה">
                 Invitation Code
             </label>
             <input type="text" name="invitation_code" required placeholder="Enter code (e.g. OR2026)" data-en-placeholder="Enter code (e.g. OR2026)" data-he-placeholder="הזן קוד (למשל: OR2026)"
                    value="{{ form_data.get('invitation_code', request.args.get('code', '')) if form_data else request.args.get('code', '') }}"
-                   class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 uppercase">
+                   class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 uppercase transition-colors">
         </div>
 
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg text-sm transition shadow mt-2" data-en="Register Account" data-he="הרשם למערכת">
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-lg text-sm transition shadow-sm mt-2" data-en="Register Account" data-he="הרשם למערכת">
             Register Account
         </button>
     </form>
 
-    <p class="text-xs text-center text-slate-500 mt-4">
+    <p class="text-xs text-center text-slate-500 dark:text-slate-400 mt-4">
         <span data-en="Already have an account?" data-he="כבר יש לך חשבון?">Already have an account?</span> 
-        <a href="{{ url_for('auth.login') }}" class="text-indigo-600 font-semibold hover:underline" data-en="Log In" data-he="התחבר">Log In</a>
+        <a href="{{ url_for('auth.login') }}" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline" data-en="Log In" data-he="התחבר">Log In</a>
     </p>
 </div>
 {% endblock %}
