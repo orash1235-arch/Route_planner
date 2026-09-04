@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, g
 from sqlalchemy import or_, and_
 from app import db
-from app.models import Trip, TripSite, Car
+from app.models import Trip, TripSite, Car, Soldier
 from app.routes.auth import login_required
 from flask_login import login_required, current_user
 
@@ -34,11 +34,9 @@ def new_ride():
         is_draft = request.form.get('action') == 'draft'
         license_plate = request.form.get('license_plate')
         
-        # Parse date string (YYYY-MM-DD) into a date object
         date_str = request.form.get('departure_date')
         parsed_date = datetime.strptime(date_str, '%Y-%m-%d').date() if date_str else None
 
-        # 1. Instantiate the Trip record
         new_trip = Trip(
             car_license_plate=license_plate if license_plate else None,
             commander=request.form.get('commander'),
@@ -50,19 +48,17 @@ def new_ride():
             est_duration=float(request.form.get('est_duration')) if request.form.get('est_duration') else None,
             notes=request.form.get('notes'),
             is_draft=is_draft,
-            user_id=current_user.id  # Assign ownership to active user
+            user_id=current_user.id
         )
         
-        # 2. Update Car status ONLY if it's a published ride (not a draft)
         if not is_draft and license_plate:
             car = Car.query.get(license_plate)
             if car:
                 car.is_on_ride = True
 
         db.session.add(new_trip)
-        db.session.flush()  # Generates new_trip.id for the sites below
+        db.session.flush()
 
-        # 3. Add dynamic sites
         site_names = request.form.getlist('site_name[]')
         site_difficulties = request.form.getlist('site_difficulty[]')
         site_descriptions = request.form.getlist('site_description[]')
@@ -86,10 +82,19 @@ def new_ride():
             
         return redirect(url_for('trips.list_trips'))
 
+    # GET Request: Fetch both cars and commanders cleanly
+    # .contains handles cases with hidden trailing spaces or special characters
+    commanders = Soldier.query.filter(Soldier.job_title.contains("מפקד")).all()
     cars = Car.query.all()
-    return render_template('new_ride.html', cars=cars)
+
+    # Make sure template name matches your actual HTML file (e.g., 'new_ride.html')
+    return render_template('new_ride.html', cars=cars, commanders=commanders)
+
+
 
 @trips_bp.route('/<int:trip_id>', methods=['GET'])
 def view_trip(trip_id):
     trip = Trip.query.get_or_404(trip_id)
     return render_template('view_trip.html', trip=trip)
+
+

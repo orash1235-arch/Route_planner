@@ -41,9 +41,17 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Expedition Commander *" data-he="מפקד משלח *">Expedition Commander *</label>
-                    <input type="text" name="commander" required placeholder="e.g. David R." class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
-                </div>
+   
+    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1"
+           data-en="Expedition Commander *" data-he="מפקד משלח *">Expedition Commander *</label>
+    <select name="commander" required
+            class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+        <option value="" disabled selected data-en="Select a commander" data-he="בחר מפקד">Select a commander</option>
+        {% for soldier in commanders %}
+            <option value="{{ soldier.id }}">{{ soldier.full_name if soldier.full_name else soldier.name }}</option>
+        {% endfor %}
+    </select>
+</div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Departure Date *" data-he="תאריך יציאה *">Departure Date *</label>
