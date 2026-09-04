@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, g
 from sqlalchemy import or_, and_
 from app import db
-from app.models import Trip, TripSite, Car, Soldier
+from app.models import Trip, TripSite, Car, Soldier, Site
 from app.routes.auth import login_required
 from flask_login import login_required, current_user
 
@@ -91,8 +91,9 @@ def new_ride():
         )
     ).all()
     cars = Car.query.all()
+    all_sites = Site.query.order_by(Site.name.asc()).all()
 
-    return render_template('new_ride.html', cars=cars, commanders=commanders, drivers=drivers)
+    return render_template('new_ride.html', cars=cars, commanders=commanders, drivers=drivers, sites=all_sites)
 
 
 @trips_bp.route('/<int:trip_id>', methods=['GET'])

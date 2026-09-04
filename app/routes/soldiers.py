@@ -5,7 +5,7 @@ from app.routes.auth import login_required
 
 soldiers_bp = Blueprint('soldiers', __name__, url_prefix='/soldiers')
 
-RANKS = ["טוראי", "רב״ט", "סמל", "סמ״ר", "רס״ל", "רס״ם", "סג״ם", "סגן", "סרן", "רס״ן"]
+RANKS = ["טוראי", "רב״ט", "סמל", "סמ״ר", "רס״ל", "רס״ר", "סג״ם", "סגן", "סרן", "סא״ל"]
 JOB_TITLES = ["טכנאי", "מפקד", "נהג", "אדום", "לוגיסטיקה", "בקר"]
 
 @soldiers_bp.route('/', methods=['GET', 'POST'])
