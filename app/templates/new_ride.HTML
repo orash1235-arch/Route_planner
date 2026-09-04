@@ -48,7 +48,7 @@
             class="w-full text-xs p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
         <option value="" disabled selected data-en="Select a commander" data-he="בחר מפקד">Select a commander</option>
         {% for soldier in commanders %}
-            <option value="{{ soldier.id }}">{{ soldier.full_name if soldier.full_name else soldier.name }}</option>
+            <option value="{{ soldier.full_name }}">{{ soldier.full_name if soldier.full_name else soldier.name }}</option>
         {% endfor %}
     </select>
 </div>

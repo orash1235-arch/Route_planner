@@ -26,17 +26,31 @@
                 </button>
             {% endif %}
 
-            <a href="{{ url_for('trips.list_trips') if current_user.is_authenticated else '#' }}" class="text-xl font-bold tracking-wide text-indigo-400 flex items-center gap-2">
-                ⚡ RoutePlanner
-            </a>
-            
+           <a href="{{ url_for('trips.list_trips') if current_user.is_authenticated else '#' }}" class="flex items-center gap-2 group">
+    <!-- Sharp Vector Lightning Icon -->
+    <svg class="w-6 h-6 text-indigo-400 group-hover:text-indigo-300 group-hover:rotate-6 transition-transform duration-200 drop-shadow-[0_0_8px_rgba(99,102,241,0.5)]" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M13 2L3 14h7v8l10-12h-7V2z"/>
+    </svg>
+    <!-- Gradient Text -->
+    <span class="text-xl font-bold tracking-tight text-slate-100 group-hover:text-white transition-colors">
+        Route<span class="text-indigo-400 font-extrabold">Planner</span>
+    </span>
+</a>
             {% if current_user.is_authenticated and request.endpoint not in ['auth.login', 'auth.register'] %}
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="{{ url_for('trips.list_trips') }}" class="hover:text-indigo-300 transition text-sm" data-en="Trips" data-he="נסיעות">Trips</a>
-                    <a href="{{ url_for('sites.list_sites') }}" class="hover:text-indigo-300 transition text-sm" data-en="Sites" data-he="אתרים">Sites</a>
-                    <a href="{{ url_for('cars.list_cars') }}" class="hover:text-indigo-300 transition text-sm" data-en="Cars" data-he="רכבים">Cars</a>
-                    <a href="{{ url_for('soldiers.list_soldiers') }}" class="hover:text-indigo-300 transition text-sm" data-en="Soldiers" data-he="חיילים">Soldiers</a>
-                </div>
+                    <a href="{{ url_for('trips.list_trips') }}" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 {{ 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm' if request.endpoint.startswith('trips.') else 'text-slate-300 hover:text-white hover:bg-slate-700/50' }}" data-en="Trips" data-he="נסיעות">
+            Trips
+        </a>
+        <a href="{{ url_for('sites.list_sites') }}" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 {{ 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm' if request.endpoint.startswith('sites.') else 'text-slate-300 hover:text-white hover:bg-slate-700/50' }}" data-en="Sites" data-he="אתרים">
+            Sites
+        </a>
+        <a href="{{ url_for('cars.list_cars') }}" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 {{ 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm' if request.endpoint.startswith('cars.') else 'text-slate-300 hover:text-white hover:bg-slate-700/50' }}" data-en="Cars" data-he="רכבים">
+            Cars
+        </a>
+        <a href="{{ url_for('soldiers.list_soldiers') }}" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 {{ 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm' if request.endpoint.startswith('soldiers.') else 'text-slate-300 hover:text-white hover:bg-slate-700/50' }}" data-en="Soldiers" data-he="חיילים">
+            Soldiers
+        </a>
+    </div>
             {% endif %}
         </div>
 
