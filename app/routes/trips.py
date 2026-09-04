@@ -89,3 +89,7 @@ def new_ride():
     cars = Car.query.all()
     return render_template('new_ride.html', cars=cars)
 
+@trips_bp.route('/<int:trip_id>', methods=['GET'])
+def view_trip(trip_id):
+    trip = Trip.query.get_or_404(trip_id)
+    return render_template('view_trip.html', trip=trip)
