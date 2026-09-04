@@ -82,14 +82,17 @@ def new_ride():
             
         return redirect(url_for('trips.list_trips'))
 
-    # GET Request: Fetch both cars and commanders cleanly
-    # .contains handles cases with hidden trailing spaces or special characters
+    # GET Request: Fetch options for form dropdowns
     commanders = Soldier.query.filter(Soldier.job_title.contains("מפקד")).all()
+    drivers = Soldier.query.filter(
+        or_(
+            Soldier.has_driver_license == True,
+            Soldier.job_title.contains("נהג")
+        )
+    ).all()
     cars = Car.query.all()
 
-    # Make sure template name matches your actual HTML file (e.g., 'new_ride.html')
-    return render_template('new_ride.html', cars=cars, commanders=commanders)
-
+    return render_template('new_ride.html', cars=cars, commanders=commanders, drivers=drivers)
 
 
 @trips_bp.route('/<int:trip_id>', methods=['GET'])
