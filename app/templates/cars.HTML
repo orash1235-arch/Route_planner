@@ -4,7 +4,7 @@
 <div class="space-y-6">
     
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
+   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
         <div>
             <h1 class="text-xl font-bold text-slate-900 dark:text-white" data-en="Fleet Vehicles" data-he="צי רכבים">Fleet Vehicles</h1>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-en="Manage and view the operational status of all vehicles" data-he="ניהול וצפייה בסטטוס התפעולי של כל הרכבים">
@@ -16,14 +16,19 @@
                 <span data-en="Total Vehicles:" data-he="סה&quot;כ רכבים:">Total Vehicles:</span>
                 <span class="font-bold text-indigo-600 dark:text-indigo-400" id="totalVehicleCount">{{ cars | length }}</span>
             </span>
+             {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
             <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <span data-en="Export CSV" data-he="ייצוא CSV">Export CSV</span>
             </button>
+
+            <!-- Show Add button only for NORTH-ADMIN -->
+           
             <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <span>+</span>
                 <span data-en="Add Vehicle" data-he="הוסף רכב">Add Vehicle</span>
             </button>
+            {% endif %}
         </div>
     </div>
 
@@ -71,7 +76,10 @@
                                 <span class="text-slate-400 dark:text-slate-500 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
+                        <!-- Show Actions column header only for NORTH-ADMIN -->
+                        {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
                         <th class="py-3 px-4 text-right" data-en="Actions" data-he="פעולות">Actions</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-xs text-slate-700 dark:text-slate-300">
@@ -100,13 +108,28 @@
                                     </span>
                                 {% endif %}
                             </td>
-                            <td class="py-3 px-4 text-right">
-                                <button onclick="openEditModal('{{ car.license_plate }}', '{{ car.car_type }}', '{{ car.current_km or 0 }}', '{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else '' }}')" 
-                                        class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 font-medium" 
-                                        data-en="Edit" data-he="ערוך">
-                                    Edit
-                                </button>
-                            </td>
+                            <!-- Show Edit action button only for NORTH-ADMIN -->
+                           {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
+<td class="py-3 px-4 text-right">
+    <div class="flex items-center justify-end gap-3">
+        <!-- Edit Button -->
+        <button onclick="openEditModal('{{ car.license_plate }}', '{{ car.car_type }}', '{{ car.current_km or 0 }}', '{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else '' }}')" 
+                class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 font-medium transition" 
+                data-en="Edit" data-he="ערוך">
+            Edit
+        </button>
+
+        <!-- Delete Form -->
+        <form action="{{ url_for('cars.delete_car', license_plate=car.license_plate) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete vehicle {{ car.license_plate }}? This action cannot be undone.');">
+            <button type="submit" 
+                    class="text-rose-600 dark:text-rose-400 hover:text-rose-900 dark:hover:text-rose-300 font-medium transition" 
+                    data-en="Delete" data-he="מחק">
+                Delete
+            </button>
+        </form>
+    </div>
+</td>
+{% endif %}
                         </tr>
                     {% else %}
                         <tr>
@@ -115,11 +138,6 @@
                             </td>
                         </tr>
                     {% endfor %}
-                    <tr id="noResultsRow" class="hidden">
-                        <td colspan="6" class="py-8 text-center text-slate-400 dark:text-slate-500 text-xs" data-en="No matching vehicles found." data-he="לא נמצאו רכבים תואמים.">
-                            No matching vehicles found.
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -127,6 +145,7 @@
 </div>
 
 <!-- Add Vehicle Modal -->
+ {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
 <div id="addCarModal" class="fixed inset-0 bg-slate-900/50 dark:bg-slate-950/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-md overflow-hidden">
         <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
@@ -189,6 +208,7 @@
         </form>
     </div>
 </div>
+{% endif %}
 
 <script>
     function openAddModal() {

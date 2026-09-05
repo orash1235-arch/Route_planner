@@ -7,7 +7,7 @@ from app.models import User
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-VALID_INVITATION_CODES = ["OR2026", "FLASK-ADMIN", "TRIP-TEAM"]
+VALID_INVITATION_CODES = ["OR2026", "NORTH-ADMIN", "TRIP-TEAM"]
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():

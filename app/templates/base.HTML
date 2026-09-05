@@ -39,7 +39,7 @@
 </a>
             {% if current_user.is_authenticated and request.endpoint not in ['auth.login', 'auth.register'] %}
                 <div class="hidden md:flex items-center space-x-6">
-                    <a href="{{ url_for('trips.list_trips') }}" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 {{ 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm' if request.endpoint.startswith('trips.') else 'text-slate-300 hover:text-white hover:bg-slate-700/50' }}" data-en="Trips" data-he="נסיעות">
+                    <a href="{{ url_for('trips.list_trips') }}" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 {{ 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm' if request.endpoint.startswith('trips.') else 'text-slate-300 hover:text-white hover:bg-slate-700/50' }}" data-en="Rides" data-he="נסיעות">
             Trips
         </a>
         <a href="{{ url_for('sites.list_sites') }}" class="px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 {{ 'bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 shadow-sm' if request.endpoint.startswith('sites.') else 'text-slate-300 hover:text-white hover:bg-slate-700/50' }}" data-en="Sites" data-he="אתרים">

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from app.routes.auth import login_required
+from flask_login import login_required, current_user
 from app.models import Car, db
 from datetime import datetime
 
@@ -9,6 +9,11 @@ cars_bp = Blueprint('cars', __name__, url_prefix='/cars')
 @login_required
 def list_cars():
     if request.method == 'POST':
+        # Direct check for invitation code
+        if current_user.used_invitation_code != "NORTH-ADMIN":
+            flash("Permission denied. Only users with the NORTH-ADMIN code can add vehicles.", "danger")
+            return redirect(url_for('cars.list_cars'))
+
         license_plate = request.form.get('license_plate')
         car_type = request.form.get('car_type')
         current_km = request.form.get('current_km', type=int)
@@ -46,6 +51,11 @@ def list_cars():
 @cars_bp.route('/edit/<string:license_plate>', methods=['POST'])
 @login_required
 def edit_car(license_plate):
+    # Direct check for invitation code
+    if current_user.used_invitation_code != "NORTH-ADMIN":
+        flash("Permission denied. Only users with the NORTH-ADMIN code can edit vehicles.", "danger")
+        return redirect(url_for('cars.list_cars'))
+
     car = Car.query.get_or_404(license_plate)
     
     car.car_type = request.form.get('car_type', car.car_type)
@@ -59,4 +69,25 @@ def edit_car(license_plate):
         
     db.session.commit()
     flash(f"Vehicle {license_plate} updated successfully!", "success")
+    return redirect(url_for('cars.list_cars'))
+
+@cars_bp.route('/delete/<string:license_plate>', methods=['POST'])
+@login_required
+def delete_car(license_plate):
+    # Direct check for invitation code
+    if current_user.used_invitation_code != "NORTH-ADMIN":
+        flash("Permission denied. Only users with the NORTH-ADMIN code can delete vehicles.", "danger")
+        return redirect(url_for('cars.list_cars'))
+
+    car = Car.query.get_or_404(license_plate)
+    
+    # Check if the vehicle is currently on an active ride
+    if car.is_on_ride:
+        flash(f"Cannot delete vehicle {license_plate} because it is currently on a ride.", "warning")
+        return redirect(url_for('cars.list_cars'))
+
+    db.session.delete(car)
+    db.session.commit()
+    
+    flash(f"Vehicle {license_plate} deleted successfully!", "success")
     return redirect(url_for('cars.list_cars'))
