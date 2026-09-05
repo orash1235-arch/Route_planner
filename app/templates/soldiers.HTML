@@ -4,33 +4,42 @@
 <div class="space-y-6">
 
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-        <div>
-            <h1 class="text-xl font-bold text-slate-900 dark:text-slate-100" data-en="Personnel Directory" data-he="ניהול חיילים וסגל">Personnel Directory</h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-en="Manage unit roster, military IDs, linked User IDs, ranks, and driving qualifications." data-he="ניהול רשימת החיילים, תעודת זהות, מספר אישי, דרגות והסמכות נהיגה">
-                Manage unit roster, military IDs, linked User IDs, ranks, and driving qualifications.
-            </p>
-        </div>
-        <div class="flex items-center gap-3">
-            <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1">
-                <span data-en="Total Personnel:" data-he="סה&quot;כ חיילים:">Total Personnel:</span>
-                <span class="font-bold text-indigo-600 dark:text-indigo-400" id="totalPersonnelCount">{{ soldiers | length }}</span>
-            </span>
-             <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                <span data-en="Export CSV" data-he="ייצוא CSV">Export CSV</span>
-            </button>
-            <button onclick="openModal('addSoldierModal')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
-                <span>+</span>
-                <span data-en="Add Soldier" data-he="הוסף חייל">Add Soldier</span>
-            </button>
-        </div>
-    </div>
+   
 
     <!-- Search Bar -->
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+   
+
+    <!-- Soldiers Table -->
+   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+    <div>
+        <h1 class="text-xl font-bold text-slate-900 dark:text-slate-100" data-en="Personnel Directory" data-he="ניהול חיילים וסגל">Personnel Directory</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1" data-en="Manage unit roster, military IDs, linked User IDs, ranks, and driving qualifications." data-he="ניהול רשימת החיילים, תעודת זהות, מספר אישי, דרגות והסמכות נהיגה">
+            Manage unit roster, military IDs, linked User IDs, ranks, and driving qualifications.
+        </p>
+    </div>
+    <div class="flex items-center gap-3">
+        <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1">
+            <span data-en="Total Personnel:" data-he="סה&quot;כ חיילים:">Total Personnel:</span>
+            <span class="font-bold text-indigo-600 dark:text-indigo-400" id="totalPersonnelCount">{{ soldiers | length }}</span>
+        </span>
+        {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
+        <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span data-en="Export CSV" data-he="ייצוא CSV">Export CSV</span>
+        </button>
+
+        <!-- Show Add Soldier button only for NORTH-ADMIN -->
+        
+        <button onclick="openModal('addSoldierModal')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
+            <span>+</span>
+            <span data-en="Add Soldier" data-he="הוסף חייל">Add Soldier</span>
+        </button>
+        {% endif %}
+    </div>
+</div>
+ <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
         <div class="relative w-full max-w-md">
             <input type="text" 
                    id="searchInput" 
@@ -48,151 +57,156 @@
         
        
     </div>
-
-    <!-- Soldiers Table -->
-    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse" id="soldiersTable">
-                <thead>
-                    <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
-                        <th onclick="sortTable(0)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
-                            <div class="flex items-center justify-between">
-                                <span data-en="ID Number (ת&quot;ז)" data-he="תעודת זהות">ID Number</span>
-                                <span class="sort-icon text-slate-400 text-[10px] ml-1">↕</span>
-                            </div>
-                        </th>
-                        <th onclick="sortTable(1)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
-                            <div class="flex items-center justify-between">
-                                <span data-en="Personal ID (מ&quot;א)" data-he="מספר אישי">Personal ID</span>
-                                <span class="sort-icon text-slate-400 text-[10px] ml-1">↕</span>
-                            </div>
-                        </th>
-                        <th onclick="sortTable(2)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
-                            <div class="flex items-center justify-between">
-                                <span data-en="Full Name" data-he="שם מלא">Full Name</span>
-                                <span class="sort-icon text-slate-400 text-[10px] ml-1">↕</span>
-                            </div>
-                        </th>
-                        <th onclick="sortTable(3)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
-                            <div class="flex items-center justify-between">
-                                <span data-en="Rank" data-he="דרגה">Rank</span>
-                                <span class="sort-icon text-slate-400 text-[10px] ml-1">↕</span>
-                            </div>
-                        </th>
-                        <th onclick="sortTable(4)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
-                            <div class="flex items-center justify-between">
-                                <span data-en="Job Title" data-he="תפקיד">Job Title</span>
-                                <span class="sort-icon text-slate-400 text-[10px] ml-1">↕</span>
-                            </div>
-                        </th>
-                        <th onclick="sortTable(5)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
-                            <div class="flex items-center justify-between">
-                                <span data-en="Driver's License" data-he="רישיון נהיגה">Driver's License</span>
-                                <span class="sort-icon text-slate-400 text-[10px] ml-1">↕</span>
-                            </div>
-                        </th>
-                        <th class="py-3 px-4 text-right" data-en="Actions" data-he="פעולות">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-sm" id="tableBody">
-                    {% if soldiers %}
-                        {% for s in soldiers %}
-                        <tr class="soldier-row hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition">
-                            <td class="py-3.5 px-4 font-mono text-slate-600 dark:text-slate-400">{{ s.id_number or '' }}</td>
-                            <td class="py-3.5 px-4 font-mono font-semibold text-slate-800 dark:text-slate-200">{{ s.personal_id }}</td>
-                            <td class="py-3.5 px-4 font-medium text-slate-900 dark:text-slate-100">{{ s.full_name }}</td>
-                            <td class="py-3.5 px-4">
-                                <span class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium px-2.5 py-1 rounded-md text-xs border border-slate-200 dark:border-slate-600">
-                                    {{ s.rank }}
-                                </span>
-                            </td>
-                            <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">{{ s.job_title }}</td>
-                            <td class="py-3.5 px-4" data-sort="{{ 1 if s.has_driver_license else 0 }}">
-                                {% if s.has_driver_license %}
-                                    <span class="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs px-2.5 py-1 rounded-full font-medium border border-emerald-200 dark:border-emerald-800">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                        <span data-en="Licensed" data-he="בעל רישיון">Licensed</span>
-                                    </span>
-                                {% else %}
-                                    <span class="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-xs px-2.5 py-1 rounded-full font-medium">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                                        <span data-en="No License" data-he="ללא רישיון">No License</span>
-                                    </span>
-                                {% endif %}
-                            </td>
-                            <td class="py-3.5 px-4 text-right space-x-2">
-                                <button onclick="openModal('editModal-{{ s.id }}')" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-xs font-semibold" data-en="Edit" data-he="ערוך">Edit</button>
-                                <form action="{{ url_for('soldiers.delete_soldier', id=s.id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to remove this soldier?');">
-                                    <button type="submit" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-xs font-semibold" data-en="Delete" data-he="מחק">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-
-                        <!-- Edit Modal -->
-                        <div id="editModal-{{ s.id }}" class="modal-overlay fixed inset-0 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4" onclick="handleBackdropClick(event, 'editModal-{{ s.id }}')">
-                            <div class="bg-white dark:bg-slate-800 rounded-xl max-w-md w-full p-6 shadow-xl border border-slate-200 dark:border-slate-700" onclick="event.stopPropagation()">
-                                <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100 dark:border-slate-700">
-                                    <h3 class="font-bold text-slate-900 dark:text-slate-100" data-en="Edit Soldier" data-he="עריכת פרטי חייל">Edit Soldier</h3>
-                                    <button onclick="closeModal('editModal-{{ s.id }}')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">&times;</button>
-                                </div>
-                                <form action="{{ url_for('soldiers.edit_soldier', id=s.id) }}" method="POST" class="space-y-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="ID Number (ת&quot;ז)" data-he="תעודת זהות">ID Number</label>
-                                        <input type="text" name="id_number" value="{{ s.id_number or '' }}" required class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="Personal ID (מ&quot;א)" data-he="מספר אישי">Personal ID</label>
-                                        <input type="text" name="personal_id" value="{{ s.personal_id }}" required class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="Full Name" data-he="שם מלא">Full Name</label>
-                                        <input type="text" name="full_name" value="{{ s.full_name }}" required class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="Rank" data-he="דרגה">Rank</label>
-                                        <select name="rank" class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                            {% for r in ranks %}
-                                                <option value="{{ r }}" {% if s.rank == r %}selected{% endif %}>{{ r }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="Job Title" data-he="תפקיד">Job Title</label>
-                                        <select name="job_title" class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                                            {% for r in job_titles %}
-                                                <option value="{{ r }}" {% if s.job_title == r %}selected{% endif %}>{{ r }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="flex items-center gap-2 pt-2">
-                                        <input type="checkbox" id="edit_license_{{ s.id }}" name="has_driver_license" value="1" {% if s.has_driver_license %}checked{% endif %} class="rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 dark:bg-slate-900">
-                                        <label for="edit_license_{{ s.id }}" class="text-xs font-medium text-slate-700 dark:text-slate-300" data-en="Has Driver's License" data-he="בעל רישיון נהיגה">Has Driver's License</label>
-                                    </div>
-                                    <div class="flex justify-end gap-2 pt-4 border-t border-slate-100 dark:border-slate-700">
-                                        <button type="button" onclick="closeModal('editModal-{{ s.id }}')" class="px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg" data-en="Cancel" data-he="ביטול">Cancel</button>
-                                        <button type="submit" class="px-4 py-2 text-xs font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg" data-en="Save Changes" data-he="שמור שינויים">Save Changes</button>
-                                    </div>
-                                </form>
-                            </div>
+<div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse" id="soldiersTable">
+            <thead>
+                <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+                    <th onclick="sortTable(0)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
+                        <div class="flex items-center justify-between">
+                            <span data-en="ID Number (ת&quot;ז)" data-he="תעודת זהות">ID Number</span>
+                            <span class="sort-icon text-slate-400 text-[10px] ml-1">⇅</span>
                         </div>
-                        {% endfor %}
-                    {% else %}
-                        <tr id="noDataRow">
-                            <td colspan="7" class="py-8 text-center text-slate-400 dark:text-slate-500 italic" data-en="No soldiers registered in the system." data-he="אין חיילים רשומים במערכת.">
-                                No soldiers registered in the system.
-                            </td>
-                        </tr>
+                    </th>
+                    <th onclick="sortTable(1)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
+                        <div class="flex items-center justify-between">
+                            <span data-en="Personal ID (מ&quot;א)" data-he="מספר אישי">Personal ID</span>
+                            <span class="sort-icon text-slate-400 text-[10px] ml-1">⇅</span>
+                        </div>
+                    </th>
+                    <th onclick="sortTable(2)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
+                        <div class="flex items-center justify-between">
+                            <span data-en="Full Name" data-he="שם מלא">Full Name</span>
+                            <span class="sort-icon text-slate-400 text-[10px] ml-1">⇅</span>
+                        </div>
+                    </th>
+                    <th onclick="sortTable(3)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
+                        <div class="flex items-center justify-between">
+                            <span data-en="Rank" data-he="דרגה">Rank</span>
+                            <span class="sort-icon text-slate-400 text-[10px] ml-1">⇅</span>
+                        </div>
+                    </th>
+                    <th onclick="sortTable(4)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
+                        <div class="flex items-center justify-between">
+                            <span data-en="Job Title" data-he="תפקיד">Job Title</span>
+                            <span class="sort-icon text-slate-400 text-[10px] ml-1">⇅</span>
+                        </div>
+                    </th>
+                    <th onclick="sortTable(5)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
+                        <div class="flex items-center justify-between">
+                            <span data-en="Driver's License" data-he="רישיון נהיגה">Driver's License</span>
+                            <span class="sort-icon text-slate-400 text-[10px] ml-1">⇅</span>
+                        </div>
+                    </th>
+                    <!-- Actions Column Header only visible for NORTH-ADMIN -->
+                    {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
+                    <th class="py-3 px-4 text-right" data-en="Actions" data-he="פעולות">Actions</th>
                     {% endif %}
-                    
-                    <!-- Search No Match Placeholder Row -->
-                    <tr id="noSearchResultsRow" class="hidden">
-                        <td colspan="7" class="py-8 text-center text-slate-400 dark:text-slate-500 italic" data-en="No matching personnel records found." data-he="לא נמצאו חיילים המתאימים לחיפוש.">
-                            No matching personnel records found.
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-sm" id="tableBody">
+                {% if soldiers %}
+                    {% for s in soldiers %}
+                    <tr class="soldier-row hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition">
+                        <td class="py-3.5 px-4 font-mono text-slate-600 dark:text-slate-400">{{ s.id_number or '' }}</td>
+                        <td class="py-3.5 px-4 font-mono font-semibold text-slate-800 dark:text-slate-200">{{ s.personal_id }}</td>
+                        <td class="py-3.5 px-4 font-medium text-slate-900 dark:text-slate-100">{{ s.full_name }}</td>
+                        <td class="py-3.5 px-4">
+                            <span class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium px-2.5 py-1 rounded-md text-xs border border-slate-200 dark:border-slate-600">
+                                {{ s.rank }}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">{{ s.job_title }}</td>
+                        <td class="py-3.5 px-4" data-sort="{{ 1 if s.has_driver_license else 0 }}">
+                            {% if s.has_driver_license %}
+                                <span class="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs px-2.5 py-1 rounded-full font-medium border border-emerald-200 dark:border-emerald-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    <span data-en="Licensed" data-he="בעל רישיון">Licensed</span>
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-xs px-2.5 py-1 rounded-full font-medium">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                    <span data-en="No License" data-he="ללא רישיון">No License</span>
+                                </span>
+                            {% endif %}
+                        </td>
+                        <!-- Actions Cell only visible for NORTH-ADMIN -->
+                        {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
+                        <td class="py-3.5 px-4 text-right space-x-2">
+                            <button onclick="openModal('editModal-{{ s.id }}')" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-xs font-semibold" data-en="Edit" data-he="ערוך">Edit</button>
+                            <form action="{{ url_for('soldiers.delete_soldier', id=s.id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to remove this soldier?');">
+                                <button type="submit" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-xs font-semibold" data-en="Delete" data-he="מחק">Delete</button>
+                            </form>
+                        </td>
+                        {% endif %}
+                    </tr>
+
+                    <!-- Edit Modal only rendered for NORTH-ADMIN -->
+                    {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
+                    <div id="editModal-{{ s.id }}" class="modal-overlay fixed inset-0 bg-slate-900/40 dark:bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4" onclick="handleBackdropClick(event, 'editModal-{{ s.id }}')">
+                        <div class="bg-white dark:bg-slate-800 rounded-xl max-w-md w-full p-6 shadow-xl border border-slate-200 dark:border-slate-700" onclick="event.stopPropagation()">
+                            <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100 dark:border-slate-700">
+                                <h3 class="font-bold text-slate-900 dark:text-slate-100" data-en="Edit Soldier" data-he="עריכת פרטי חייל">Edit Soldier</h3>
+                                <button onclick="closeModal('editModal-{{ s.id }}')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">&times;</button>
+                            </div>
+                            <form action="{{ url_for('soldiers.edit_soldier', id=s.id) }}" method="POST" class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="ID Number (ת&quot;ז)" data-he="תעודת זהות">ID Number</label>
+                                    <input type="text" name="id_number" value="{{ s.id_number or '' }}" required class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="Personal ID (מ&quot;א)" data-he="מספר אישי">Personal ID</label>
+                                    <input type="text" name="personal_id" value="{{ s.personal_id }}" required class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none font-mono">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="Full Name" data-he="שם מלא">Full Name</label>
+                                    <input type="text" name="full_name" value="{{ s.full_name }}" required class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="Rank" data-he="דרגה">Rank</label>
+                                    <select name="rank" class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                        {% for r in ranks %}
+                                            <option value="{{ r }}" {% if s.rank == r %}selected{% endif %}>{{ r }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1" data-en="Job Title" data-he="תפקיד">Job Title</label>
+                                    <select name="job_title" class="w-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                        {% for r in job_titles %}
+                                            <option value="{{ r }}" {% if s.job_title == r %}selected{% endif %}>{{ r }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="flex items-center gap-2 pt-2">
+                                    <input type="checkbox" id="edit_license_{{ s.id }}" name="has_driver_license" value="1" {% if s.has_driver_license %}checked{% endif %} class="rounded border-slate-300 dark:border-slate-600 text-indigo-600 focus:ring-indigo-500 dark:bg-slate-900">
+                                    <label for="edit_license_{{ s.id }}" class="text-xs font-medium text-slate-700 dark:text-slate-300" data-en="Has Driver's License" data-he="בעל רישיון נהיגה">Has Driver's License</label>
+                                </div>
+                                <div class="flex justify-end gap-2 pt-4 border-t border-slate-100 dark:border-slate-700">
+                                    <button type="button" onclick="closeModal('editModal-{{ s.id }}')" class="px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg" data-en="Cancel" data-he="ביטול">Cancel</button>
+                                    <button type="submit" class="px-4 py-2 text-xs font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg" data-en="Save Changes" data-he="שמור שינויים">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr id="noDataRow">
+                        <td colspan="7" class="py-8 text-center text-slate-400 dark:text-slate-500 italic" data-en="No soldiers registered in the system." data-he="אין חיילים רשומים במערכת.">
+                            No soldiers registered in the system.
                         </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
+                {% endif %}
+                
+                <!-- Search No Match Placeholder Row -->
+                <tr id="noSearchResultsRow" class="hidden">
+                    <td colspan="7" class="py-8 text-center text-slate-400 dark:text-slate-500 italic" data-en="No matching personnel records found." data-he="לא נמצאו חיילים המתאימים לחיפוש.">
+                        No matching personnel records found.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
@@ -374,7 +388,7 @@
                 if (idx === colIndex) {
                     icon.innerText = isAsc ? '▲' : '▼';
                 } else {
-                    icon.innerText = '↕';
+                    icon.innerText = '⇅';
                 }
             }
         });

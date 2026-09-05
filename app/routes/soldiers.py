@@ -12,6 +12,11 @@ JOB_TITLES = ["טכנאי", "מפקד", "נהג", "אדום", "לוגיסטיק�
 @login_required
 def list_soldiers():
     if request.method == 'POST':
+        # Direct check for invitation code
+        if current_user.used_invitation_code != "NORTH-ADMIN":
+            flash("Permission denied. Only users with the NORTH-ADMIN code can add soldiers.", "danger")
+            return redirect(url_for('soldiers.list_soldiers'))
+
         id_number = request.form.get('id_number')
         personal_id = request.form.get('personal_id')
         full_name = request.form.get('full_name')
@@ -59,6 +64,11 @@ def list_soldiers():
 @soldiers_bp.route('/edit/<int:id>', methods=['POST'])
 @login_required
 def edit_soldier(id):
+    # Direct check for invitation code
+    if current_user.used_invitation_code != "NORTH-ADMIN":
+        flash("Permission denied. Only users with the NORTH-ADMIN code can edit soldiers.", "danger")
+        return redirect(url_for('soldiers.list_soldiers'))
+
     soldier = Soldier.query.get_or_404(id)
 
     soldier.id_number = request.form.get('id_number', soldier.id_number)
@@ -76,6 +86,11 @@ def edit_soldier(id):
 @soldiers_bp.route('/delete/<int:id>', methods=['POST'])
 @login_required
 def delete_soldier(id):
+    # Direct check for invitation code
+    if current_user.used_invitation_code != "NORTH-ADMIN":
+        flash("Permission denied. Only users with the NORTH-ADMIN code can delete soldiers.", "danger")
+        return redirect(url_for('soldiers.list_soldiers'))
+
     soldier = Soldier.query.get_or_404(id)
 
     db.session.delete(soldier)
