@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import current_user
 from app import db
 from app.models import Soldier, User
 from app.routes.auth import login_required

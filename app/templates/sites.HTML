@@ -18,18 +18,20 @@
             </span>
 
            
-
+ {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
             <!-- Export to CSV Button -->
             <button onclick="exportSitesToCSV()" class="bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 <span data-en="Export CSV" data-he="ייצוא CSV">Export CSV</span>
             </button>
 
+           
             <!-- Add Site Button -->
             <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <span>+</span>
                 <span data-en="Add Site" data-he="הוסף אתר">Add Site</span>
             </button>
+            {% endif %}
         </div>
     </div>
 
@@ -82,7 +84,9 @@
                                 <span class="text-slate-400 text-[10px] ml-1">⇅</span>
                             </div>
                         </th>
+                        {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
                         <th class="py-3 px-4 text-right" data-en="Actions" data-he="פעולות">Actions</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 text-xs text-slate-700 dark:text-slate-300">
@@ -127,6 +131,7 @@
                                 {% endif %}
                             </td>
 
+                            {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
                             <td class="py-3 px-4 text-right" onclick="event.stopPropagation()">
                                 <button onclick="openEditModal('{{ site.loc_id }}', '{{ site.name|e }}', '{{ site.gpt_coordinates or '' }}', '{{ site.sector or '' }}', '{{ site.food or '' }}', '{{ site.food_rating or '' }}')" 
                                         class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium" 
@@ -134,6 +139,7 @@
                                     Edit
                                 </button>
                             </td>
+                            {% endif %}
                         </tr>
 
                         <!-- Extended Details Drawer Row -->
@@ -206,6 +212,7 @@
                                         {% endif %}
                                     </div>
 
+                                    {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
                                     <!-- Quick Actions Block -->
                                     <div class="space-y-2 flex flex-col justify-between">
                                         <div>
@@ -233,6 +240,7 @@
                                             </form>
                                         </div>
                                     </div>
+                                    {% endif %}
 
                                 </div>
                             </td>
@@ -255,6 +263,7 @@
     </div>
 </div>
 
+{% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
 <!-- Add Site Modal -->
 <div id="addSiteModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-md overflow-hidden">
@@ -306,7 +315,9 @@
         </form>
     </div>
 </div>
+{% endif %}
 
+{% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
 <!-- Edit Site Modal -->
 <div id="editSiteModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-md overflow-hidden">
@@ -357,6 +368,7 @@
         </form>
     </div>
 </div>
+{% endif %}
 
 <script>
     const columnSortDirections = {};

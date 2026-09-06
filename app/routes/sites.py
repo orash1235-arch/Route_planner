@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import current_user
 from app.routes.auth import login_required
 from app.models import Site, db
 
@@ -10,6 +11,10 @@ SECTORS = ["עמקים וים", "קו כחול", "רמת הגולן"]
 @login_required
 def list_sites():
     if request.method == 'POST':
+        if current_user.used_invitation_code != "NORTH-ADMIN":
+            flash("Permission denied. Only users with the NORTH-ADMIN code can add sites.", "danger")
+            return redirect(url_for('sites.list_sites'))
+
         loc_id = request.form.get('loc_id')
         name = request.form.get('name')
         gpt_coordinates = request.form.get('gpt_coordinates')
@@ -47,6 +52,10 @@ def list_sites():
 @sites_bp.route('/edit/<string:loc_id>', methods=['POST'])
 @login_required
 def edit_site(loc_id):
+    if current_user.used_invitation_code != "NORTH-ADMIN":
+        flash("Permission denied. Only users with the NORTH-ADMIN code can edit sites.", "danger")
+        return redirect(url_for('sites.list_sites'))
+
     site = Site.query.get_or_404(loc_id)
     
     site.name = request.form.get('name', site.name)
@@ -67,6 +76,10 @@ def edit_site(loc_id):
 @sites_bp.route('/delete/<string:loc_id>', methods=['POST'])
 @login_required
 def delete_site(loc_id):
+    if current_user.used_invitation_code != "NORTH-ADMIN":
+        flash("Permission denied. Only users with the NORTH-ADMIN code can delete sites.", "danger")
+        return redirect(url_for('sites.list_sites'))
+
     site = Site.query.get_or_404(loc_id)
     
     db.session.delete(site)
