@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, g
 from sqlalchemy import or_, and_
 from app import db
@@ -11,9 +11,22 @@ trips_bp = Blueprint('trips', __name__, url_prefix='/trips')
 
 @trips_bp.route('/', methods=['GET'])
 def list_trips():
-    if current_user.is_authenticated:
-        # Logged-in users see all published trips PLUS their own drafts
+    selected_view = request.args.get('view', 'all')
+
+    if selected_view == 'history':
         rides = Trip.query.filter(
+            Trip.is_draft == False,
+            Trip.departure_date < date.today()
+        ).order_by(Trip.departure_date.desc(), Trip.departure_time.desc()).all()
+    elif selected_view == 'mine' and current_user.is_authenticated:
+        rides = Trip.query.filter(
+            Trip.user_id == current_user.id
+        ).order_by(Trip.departure_date.asc(), Trip.departure_time.asc()).all()
+    elif current_user.is_authenticated:
+        # Logged-in users see all published trips PLUS their own drafts
+        selected_view = 'all'
+        rides = Trip.query.filter(
+            Trip.departure_date >= date.today(),
             or_(
                 Trip.is_draft == False,
                 and_(Trip.is_draft == True, Trip.user_id == current_user.id)
@@ -21,11 +34,15 @@ def list_trips():
         ).order_by(Trip.departure_date.asc(), Trip.departure_time.asc()).all()
     else:
         # Unauthenticated users only see published trips
-        rides = Trip.query.filter(Trip.is_draft == False).order_by(
+        selected_view = 'all'
+        rides = Trip.query.filter(
+            Trip.is_draft == False,
+            Trip.departure_date >= date.today()
+        ).order_by(
             Trip.departure_date.asc(), Trip.departure_time.asc()
         ).all()
     
-    return render_template('trips.html', rides=rides)
+    return render_template('trips.html', rides=rides, selected_view=selected_view)
 
 @trips_bp.route('/new', methods=['GET', 'POST'])
 @login_required
