@@ -127,10 +127,10 @@
                                 Difficulty / Risk Level
                             </label>
                             <select name="site_difficulty[]" class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
-                                <option data-en="Easy" data-he="קל" value="Easy (L1)">Easy (L1)</option>
-                                <option data-en="Medium" data-he="בינוני" value="Medium (L2)">Medium (L2)</option>
-                                <option data-en="Hard" data-he="קשה" value="Hard (L3)">Hard (L3)</option>
-                                <option data-en="Severe" data-he="חמור" value="Severe (L4)">Severe (L4)</option>
+                                <option data-en="Easy (L1)" data-he="קל (L1)" value="Easy (L1)">Easy (L1)</option>
+                                <option data-en="Medium (L2)" data-he="בינוני (L2)" value="Medium (L2)">Medium (L2)</option>
+                                <option data-en="Hard (L3)" data-he="קשה (L3)" value="Hard (L3)">Hard (L3)</option>
+                                <option data-en="Severe (L4)" data-he="חמור (L4)" value="Severe (L4)">Severe (L4)</option>
                             </select>
                         </div>
                     </div>
@@ -178,32 +178,38 @@
         
         const siteHTML = `
             <div class="site-block border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 sm:p-4 bg-slate-50 dark:bg-slate-800/50 space-y-3 relative pt-10 sm:pt-8">
-                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2.5 right-3 text-xs text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 font-semibold inline-flex items-center gap-1 cursor-pointer">
+                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2.5 right-3 text-xs text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 font-semibold inline-flex items-center gap-1 cursor-pointer" data-en="Remove" data-he="הסר">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     Remove
                 </button>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Site Name & ID *</label>
-                        <input list="sites-list" name="site_name[]" required placeholder="Type site name or ID..." class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" data-en="Site Name & ID *" data-he="שם/מספר אתר *">Site Name & ID *</label>
+                        <select name="site_name[]" required class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            <option value="" disabled selected data-en="Select a site..." data-he="בחר אתר...">Select a site...</option>
+                            {% for site in sites|sort(attribute='loc_id') %}
+                                <option value="{{ site.name }}">{{ site.name }} ({{ site.loc_id }})</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Difficulty / Risk Level</label>
                         <select name="site_difficulty[]" class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option value="Easy (L1)">Easy (L1)</option>
-                            <option value="Medium (L2)">Medium (L2)</option>
-                            <option value="Hard (L3)">Hard (L3)</option>
-                            <option value="Severe (L4)">Severe (L4)</option>
+                            <option data-en="Easy (L1)" data-he="קל (L1)" value="Easy (L1)">Easy (L1)</option>
+                            <option data-en="Medium (L2)" data-he="בינוני (L2)" value="Medium (L2)">Medium (L2)</option>
+                            <option data-en="Hard (L3)" data-he="קשה (L3)" value="Hard (L3)">Hard (L3)</option>
+                            <option data-en="Severe (L4)" data-he="חמור (L4)" value="Severe (L4)">Severe (L4)</option>
                         </select>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">Work Description</label>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5" data-en="Work Description" data-he="מהות העבודה">Work Description</label>
                     <input type="text" name="site_description[]" placeholder="Describe tasks..." class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
             </div>
         `;
         container.insertAdjacentHTML('beforeend', siteHTML);
+        changeLanguage(localStorage.getItem('app_lang') || 'en');
     }
 
     function handleCarSelect(selectElement) {
