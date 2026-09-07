@@ -234,7 +234,7 @@
     }
 
     document.addEventListener('click', (event) => {
-        document.querySelectorAll('#sites-container details[open]').forEach((picker) => {
+        document.querySelectorAll('details[open]').forEach((picker) => {
             if (!picker.contains(event.target)) {
                 picker.removeAttribute('open');
             }
