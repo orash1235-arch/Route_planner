@@ -57,7 +57,7 @@ def list_trips():
             Trip.departure_date.asc(), Trip.departure_time.asc()
         ).all()
     
-    return render_template('trips.html', rides=rides, selected_view=selected_view)
+    return render_template('trips.html', rides=rides, selected_view=selected_view, today=date.today())
 
 @trips_bp.route('/new', methods=['GET', 'POST'])
 @login_required
@@ -127,7 +127,66 @@ def new_ride():
             
         return redirect(url_for('trips.list_trips'))
 
-    # GET Request: Fetch options for form dropdowns
+    return render_ride_form()
+
+
+@trips_bp.route('/edit/<int:trip_id>', methods=['GET', 'POST'])
+@login_required
+def edit_ride(trip_id):
+    if current_user.used_invitation_code != "NORTH-ADMIN":
+        flash("Permission denied. Only admin users can edit rides.", "danger")
+        return redirect(url_for('trips.list_trips'))
+
+    ride = Trip.query.get_or_404(trip_id)
+    if not ride.is_draft and (not ride.departure_date or ride.departure_date < date.today()):
+        flash("Only today's and future rides can be edited.", "warning")
+        return redirect(url_for('trips.list_trips'))
+
+    if request.method == 'POST':
+        license_plate = request.form.get('license_plate')
+        commander = request.form.get('commander')
+        driver = request.form.get('driver')
+        supervisor = request.form.get('supervisor')
+        date_str = request.form.get('departure_date')
+        departure_time = request.form.get('departure_time')
+
+        if not all([license_plate, commander, driver, supervisor, date_str, departure_time]):
+            flash("Vehicle, commander, driver, supervisor, date, and time are required.", "danger")
+            return redirect(url_for('trips.edit_ride', trip_id=trip_id))
+
+        ride.car_license_plate = license_plate
+        ride.commander = commander
+        ride.driver = driver
+        ride.supervisor = supervisor
+        ride.passengers = ', '.join(request.form.getlist('passengers[]')) or None
+        ride.departure_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        ride.departure_time = departure_time
+        ride.est_duration = float(request.form.get('est_duration')) if request.form.get('est_duration') else None
+        ride.notes = request.form.get('notes')
+
+        TripSite.query.filter_by(trip_id=ride.id).delete()
+        for name, difficulty, desc in zip(
+            request.form.getlist('site_name[]'),
+            request.form.getlist('site_difficulty[]'),
+            request.form.getlist('site_description[]')
+        ):
+            if name.strip():
+                db.session.add(TripSite(
+                    trip_id=ride.id,
+                    site_name=name,
+                    difficulty=difficulty,
+                    work_description=desc
+                ))
+
+        db.session.commit()
+        flash("Ride updated successfully!", "success")
+        return redirect(url_for('trips.list_trips'))
+
+    return render_ride_form(ride)
+
+
+def render_ride_form(ride=None):
+    """Load the shared create/edit ride form data."""
     commanders = Soldier.query.filter(Soldier.job_title.contains("מפקד")).all()
     drivers = Soldier.query.filter(
         or_(
@@ -142,6 +201,10 @@ def new_ride():
 
     return render_template(
         'new_ride.html',
+        ride=ride,
+        edit_mode=ride is not None,
+        selected_passengers=ride.passengers.split(', ') if ride and ride.passengers else [],
+        assigned_sites=ride.assigned_sites if ride else [],
         cars=cars,
         commanders=commanders,
         drivers=drivers,

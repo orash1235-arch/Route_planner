@@ -177,7 +177,12 @@
             <span data-en="Est: " data-he="משוער: ">Est: </span><strong>{{ ride.est_duration }}h</strong>
             {% endif %}
         </div>
-        <a href="{{ url_for('trips.view_trip', trip_id=ride.id) }}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-semibold" data-en="View Trip &rarr;" data-he="הצג נסיעה &rarr;">View Trip &rarr;</a>
+        <div class="flex items-center gap-3">
+            <a href="{{ url_for('trips.view_trip', trip_id=ride.id) }}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 font-semibold" data-en="View Trip &rarr;" data-he="הצג נסיעה &rarr;">View Trip &rarr;</a>
+            {% if current_user.used_invitation_code == 'NORTH-ADMIN' and (ride.is_draft or (ride.departure_date and ride.departure_date >= today)) %}
+            <a href="{{ url_for('trips.edit_ride', trip_id=ride.id) }}" class="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-semibold" data-en="Edit" data-he="ערוך">Edit</a>
+            {% endif %}
+        </div>
     </div>
 
 </div>
