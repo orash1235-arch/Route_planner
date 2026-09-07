@@ -33,7 +33,7 @@
                         <select id="car-select" name="license_plate" required onchange="handleCarSelect(this)" class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
                             <option value="" disabled selected data-en="-- Select a vehicle from fleet --" data-he="-- בחר רכב --">-- Select a vehicle from fleet --</option>
                             {% for car in cars %}
-                                <option value="{{ car.license_plate }}" data-status="{{ 'On Ride' if car.is_on_ride else 'Available' }}">
+                                <option value="{{ car.license_plate }}" data-status="{{ car_statuses[car.license_plate] }}">
                                     {{ car.car_type }} — [{{ car.license_plate }}]
                                 </option>
                             {% endfor %}
@@ -269,6 +269,9 @@
         } else if (status === 'Available') {
             selectElement.classList.add('border-emerald-500');
             wrapper.classList.add('ring-4', 'ring-emerald-500/20', 'shadow-md', 'shadow-emerald-500/10');
+        } else if (status === 'At Garage') {
+            selectElement.classList.add('border-amber-500');
+            wrapper.classList.add('ring-4', 'ring-amber-500/20', 'shadow-md', 'shadow-amber-500/10');
         }
     }
 </script>

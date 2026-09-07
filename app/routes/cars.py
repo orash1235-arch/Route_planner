@@ -1,9 +1,28 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.models import Car, db
-from datetime import datetime
+from app.models import Car, Trip, db
+from datetime import date, datetime
 
 cars_bp = Blueprint('cars', __name__, url_prefix='/cars')
+
+
+def get_car_statuses(cars):
+    today = date.today()
+    todays_ride_plates = {
+        license_plate for (license_plate,) in db.session.query(Trip.car_license_plate).filter(
+            Trip.is_draft == False,
+            Trip.departure_date == today
+        ).all()
+    }
+
+    return {
+        car.license_plate: (
+            'On Ride' if car.license_plate in todays_ride_plates
+            else 'At Garage' if car.last_garage_check == today
+            else 'Available'
+        )
+        for car in cars
+    }
 
 @cars_bp.route('/', methods=['GET', 'POST'])
 @login_required
@@ -45,7 +64,7 @@ def list_cars():
         return redirect(url_for('cars.list_cars'))
 
     cars = Car.query.all()
-    return render_template('cars.html', cars=cars)
+    return render_template('cars.html', cars=cars, car_statuses=get_car_statuses(cars))
 
 
 @cars_bp.route('/edit/<string:license_plate>', methods=['POST'])
@@ -81,8 +100,13 @@ def delete_car(license_plate):
 
     car = Car.query.get_or_404(license_plate)
     
-    # Check if the vehicle is currently on an active ride
-    if car.is_on_ride:
+    # Only today's published rides make a vehicle unavailable for deletion.
+    is_on_todays_ride = Trip.query.filter(
+        Trip.car_license_plate == car.license_plate,
+        Trip.is_draft == False,
+        Trip.departure_date == date.today()
+    ).first()
+    if is_on_todays_ride:
         flash(f"Cannot delete vehicle {license_plate} because it is currently on a ride.", "warning")
         return redirect(url_for('cars.list_cars'))
 

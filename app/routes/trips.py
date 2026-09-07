@@ -4,6 +4,7 @@ from sqlalchemy import or_, and_
 from app import db
 from app.models import Trip, TripSite, Car, Soldier, Site
 from app.routes.auth import login_required
+from app.routes.cars import get_car_statuses
 from flask_login import login_required, current_user
 
 trips_bp = Blueprint('trips', __name__, url_prefix='/trips')
@@ -55,6 +56,10 @@ def list_trips():
 @trips_bp.route('/new', methods=['GET', 'POST'])
 @login_required
 def new_ride():
+    if current_user.used_invitation_code != "NORTH-ADMIN":
+        flash("Permission denied. Only users with the NORTH-ADMIN code can add rides.", "danger")
+        return redirect(url_for('trips.list_trips'))
+
     if request.method == 'POST':
         is_draft = request.form.get('action') == 'draft'
         license_plate = request.form.get('license_plate')
@@ -127,6 +132,7 @@ def new_ride():
     cars = Car.query.all()
     all_sites = Site.query.order_by(Site.name.asc()).all()
     soldiers = Soldier.query.order_by(Soldier.full_name.asc()).all()
+    car_statuses = get_car_statuses(cars)
 
     return render_template(
         'new_ride.html',
@@ -134,7 +140,8 @@ def new_ride():
         commanders=commanders,
         drivers=drivers,
         soldiers=soldiers,
-        sites=all_sites
+        sites=all_sites,
+        car_statuses=car_statuses
     )
 
 

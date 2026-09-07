@@ -39,7 +39,7 @@
             <a href="{{ url_for('trips.list_trips', view='all') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm transition cursor-pointer">
                 <span data-en="Upcoming Rides" data-he="נסיעות קרובות">Upcoming Rides</span>
             </a>
-            {% else %}
+            {% elif current_user.used_invitation_code == 'NORTH-ADMIN' %}
             <a href="{{ url_for('trips.new_ride') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm transition cursor-pointer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -59,7 +59,7 @@
                 <div class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></div>
                 <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 whitespace-nowrap">
                     {% if ride.departure_date %}
-                    <span data-en="Rides for {{ ride.departure_date }}" data-he="נסיעות בתאריך {{ ride.departure_date }}">Rides for {{ ride.departure_date }}</span>
+                    <span data-en="Rides for {{ ride.departure_date.strftime('%d-%m-%Y') }}" data-he="נסיעות בתאריך {{ ride.departure_date.strftime('%d-%m-%Y') }}">Rides for {{ ride.departure_date.strftime('%d-%m-%Y') }}</span>
                     {% else %}
                     <span data-en="Date not set" data-he="תאריך לא הוגדר">Date not set</span>
                     {% endif %}
@@ -162,7 +162,7 @@
         <div class="text-slate-500 dark:text-slate-400">
             <span data-en="Departure: " data-he="יציאה: ">Departure: </span><strong>{{ ride.departure_time or 'N/A' }}</strong>
             {% if ride.departure_date %}
-                <span class="text-[11px] text-slate-400 dark:text-slate-500">({{ ride.departure_date }})</span>
+                <span class="text-[11px] text-slate-400 dark:text-slate-500">({{ ride.departure_date.strftime('%d-%m-%Y') }})</span>
             {% endif %}
             {% if ride.est_duration %}
             <span class="mx-1">•</span>
@@ -179,6 +179,7 @@
    
 
             <!-- Add New Expedition Card Button -->
+            {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
             <a href="{{ url_for('trips.new_ride') }}" class="group border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-indigo-500 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-indigo-50/30 dark:hover:bg-indigo-950/30 rounded-xl p-8 transition-all flex flex-col items-center justify-center min-h-[380px] text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
                 <div class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-xs border border-slate-200 dark:border-slate-700 group-hover:border-indigo-300 group-hover:bg-indigo-600 flex items-center justify-center transition-all mb-3">
                     <svg class="w-6 h-6 text-slate-500 dark:text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -192,6 +193,7 @@
                     Assign vehicle, crew members, and site locations for a new route.
                 </p>
             </a>
+            {% endif %}
 
         </div>
     </div>
