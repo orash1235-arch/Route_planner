@@ -19,9 +19,17 @@ def list_trips():
             Trip.departure_date < date.today()
         ).order_by(Trip.departure_date.desc(), Trip.departure_time.desc()).all()
     elif selected_view == 'mine' and current_user.is_authenticated:
-        rides = Trip.query.filter(
-            Trip.user_id == current_user.id
-        ).order_by(Trip.departure_date.asc(), Trip.departure_time.asc()).all()
+        assigned_soldier = Soldier.query.filter_by(id_number=current_user.id).first()
+        if assigned_soldier:
+            rides = Trip.query.filter(
+                or_(
+                    Trip.driver == assigned_soldier.full_name,
+                    Trip.supervisor == assigned_soldier.full_name,
+                    Trip.commander == assigned_soldier.full_name
+                )
+            ).order_by(Trip.departure_date.asc(), Trip.departure_time.asc()).all()
+        else:
+            rides = []
     elif current_user.is_authenticated:
         # Logged-in users see all published trips PLUS their own drafts
         selected_view = 'all'
@@ -50,18 +58,27 @@ def new_ride():
     if request.method == 'POST':
         is_draft = request.form.get('action') == 'draft'
         license_plate = request.form.get('license_plate')
-        
+        commander = request.form.get('commander')
+        driver = request.form.get('driver')
+        supervisor = request.form.get('supervisor')
         date_str = request.form.get('departure_date')
+        departure_time = request.form.get('departure_time')
+
+        if not all([license_plate, commander, driver, supervisor, date_str, departure_time]):
+            flash("Vehicle, commander, driver, supervisor, date, and time are required.", "danger")
+            return redirect(url_for('trips.new_ride'))
+        
         parsed_date = datetime.strptime(date_str, '%Y-%m-%d').date() if date_str else None
+        passengers = ', '.join(request.form.getlist('passengers[]'))
 
         new_trip = Trip(
             car_license_plate=license_plate if license_plate else None,
-            commander=request.form.get('commander'),
-            driver=request.form.get('driver'),
-            supervisor=request.form.get('supervisor'),
-            passengers=request.form.get('passengers'),
+            commander=commander,
+            driver=driver,
+            supervisor=supervisor,
+            passengers=passengers or None,
             departure_date=parsed_date,
-            departure_time=request.form.get('departure_time'),
+            departure_time=departure_time,
             est_duration=float(request.form.get('est_duration')) if request.form.get('est_duration') else None,
             notes=request.form.get('notes'),
             is_draft=is_draft,
@@ -109,8 +126,16 @@ def new_ride():
     ).all()
     cars = Car.query.all()
     all_sites = Site.query.order_by(Site.name.asc()).all()
+    soldiers = Soldier.query.order_by(Soldier.full_name.asc()).all()
 
-    return render_template('new_ride.html', cars=cars, commanders=commanders, drivers=drivers, sites=all_sites)
+    return render_template(
+        'new_ride.html',
+        cars=cars,
+        commanders=commanders,
+        drivers=drivers,
+        soldiers=soldiers,
+        sites=all_sites
+    )
 
 
 @trips_bp.route('/<int:trip_id>', methods=['GET'])

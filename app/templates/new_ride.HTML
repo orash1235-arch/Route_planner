@@ -87,11 +87,32 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5" data-en="Mission Supervisor *" data-he="מפקד משימה *">Mission Supervisor *</label>
-                    <input type="text" name="supervisor" required placeholder="Supervisor Name" class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <select name="supervisor" required class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <option value="" disabled selected data-en="Select a supervisor" data-he="בחר מפקד משימה">Select a supervisor</option>
+                        {% for soldier in soldiers %}
+                            <option value="{{ soldier.full_name }}">{{ soldier.full_name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5" data-en="Additional Passengers" data-he="נוסעים נוספים">Additional Passengers</label>
-                    <input type="text" name="passengers" placeholder="e.g. John D., Michael P." class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <details class="group relative">
+                        <summary class="flex items-center justify-between cursor-pointer list-none w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <span class="passenger-summary" data-placeholder-en="Select passengers" data-placeholder-he="בחר נוסעים">Select passengers</span>
+                            <svg class="w-4 h-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </summary>
+                        <div class="absolute z-20 mt-2 w-full max-h-56 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 shadow-lg">
+                            {% for soldier in soldiers %}
+                                <label class="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer">
+                                    <input type="checkbox" name="passengers[]" value="{{ soldier.full_name }}" class="passenger-checkbox h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                                    <span>{{ soldier.full_name }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </details>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1" data-en="Click to select one or more soldiers" data-he="לחץ כדי לבחור חייל אחד או יותר">Click to select one or more soldiers</p>
                 </div>
             </div>
         </section>
@@ -211,6 +232,28 @@
         container.insertAdjacentHTML('beforeend', siteHTML);
         changeLanguage(localStorage.getItem('app_lang') || 'en');
     }
+
+    document.addEventListener('click', (event) => {
+        document.querySelectorAll('#sites-container details[open]').forEach((picker) => {
+            if (!picker.contains(event.target)) {
+                picker.removeAttribute('open');
+            }
+        });
+    });
+
+    document.querySelectorAll('.passenger-checkbox').forEach((checkbox) => {
+        checkbox.addEventListener('change', () => {
+            const picker = checkbox.closest('details');
+            const selectedNames = Array.from(picker.querySelectorAll('.passenger-checkbox:checked'))
+                .map((selectedCheckbox) => selectedCheckbox.value);
+            const summary = picker.querySelector('.passenger-summary');
+            summary.textContent = selectedNames.length
+                ? selectedNames.join(', ')
+                : (localStorage.getItem('app_lang') === 'he'
+                    ? summary.dataset.placeholderHe
+                    : summary.dataset.placeholderEn);
+        });
+    });
 
     function handleCarSelect(selectElement) {
         const selectedOption = selectElement.options[selectElement.selectedIndex];
