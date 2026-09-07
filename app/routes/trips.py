@@ -14,7 +14,15 @@ trips_bp = Blueprint('trips', __name__, url_prefix='/trips')
 def list_trips():
     selected_view = request.args.get('view', 'all')
 
-    if selected_view == 'history':
+    if selected_view == 'drafts':
+        if not current_user.is_authenticated or current_user.used_invitation_code != "NORTH-ADMIN":
+            flash("Permission denied. Only admin users can view drafts.", "danger")
+            return redirect(url_for('trips.list_trips', view='all'))
+
+        rides = Trip.query.filter(
+            Trip.is_draft == True
+        ).order_by(Trip.departure_date.asc(), Trip.departure_time.asc()).all()
+    elif selected_view == 'history':
         rides = Trip.query.filter(
             Trip.is_draft == False,
             Trip.departure_date < date.today()
@@ -23,6 +31,7 @@ def list_trips():
         assigned_soldier = Soldier.query.filter_by(id_number=current_user.id).first()
         if assigned_soldier:
             rides = Trip.query.filter(
+                Trip.is_draft == False,
                 or_(
                     Trip.driver == assigned_soldier.full_name,
                     Trip.supervisor == assigned_soldier.full_name,
@@ -32,14 +41,11 @@ def list_trips():
         else:
             rides = []
     elif current_user.is_authenticated:
-        # Logged-in users see all published trips PLUS their own drafts
+        # Active rides contain only published trips scheduled for today or later.
         selected_view = 'all'
         rides = Trip.query.filter(
+            Trip.is_draft == False,
             Trip.departure_date >= date.today(),
-            or_(
-                Trip.is_draft == False,
-                and_(Trip.is_draft == True, Trip.user_id == current_user.id)
-            )
         ).order_by(Trip.departure_date.asc(), Trip.departure_time.asc()).all()
     else:
         # Unauthenticated users only see published trips

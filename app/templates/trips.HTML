@@ -18,12 +18,20 @@
                 <a href="{{ url_for('trips.list_trips', view='history') }}"
                     class="px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition {% if selected_view == 'history' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700{% endif %}"
                     data-en="Ride History" data-he="היסטוריית נסיעות">Ride History</a>
+                {% if current_user.is_authenticated and current_user.used_invitation_code == 'NORTH-ADMIN' %}
+                <a href="{{ url_for('trips.list_trips', view='drafts') }}"
+                    class="px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition {% if selected_view == 'drafts' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700{% endif %}"
+                    data-en="Drafts" data-he="טיוטות">Drafts</a>
+                {% endif %}
           </nav>
 
         <!-- Top Header Action Bar -->
         <div class="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-700">
             <div>
-            {% if selected_view == 'history' %}
+            {% if selected_view == 'drafts' %}
+            <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100" data-en="Draft Rides" data-he="טיוטות נסיעות">Draft Rides</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400" data-en="Review and manage unpublished rides" data-he="צפייה וניהול נסיעות שלא פורסמו">Review and manage unpublished rides</p>
+            {% elif selected_view == 'history' %}
             <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100" data-en="Ride History" data-he="היסטוריית נסיעות">Ride History</h2>
             <p class="text-xs text-slate-500 dark:text-slate-400" data-en="Review completed rides and past site assignments" data-he="צפייה בנסיעות שהסתיימו ובמשימות עבר">Review completed rides and past site assignments</p>
             {% elif selected_view == 'mine' %}
