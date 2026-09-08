@@ -17,13 +17,13 @@
             Manage unit roster, military IDs, linked User IDs, ranks, and driving qualifications.
         </p>
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex w-full sm:w-auto flex-wrap items-center gap-2 sm:gap-3">
         <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1">
             <span data-en="Total Personnel:" data-he="סה&quot;כ חיילים:">Total Personnel:</span>
             <span class="font-bold text-indigo-600 dark:text-indigo-400" id="totalPersonnelCount">{{ soldiers | length }}</span>
         </span>
         {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
-        <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="exportToCSV()" class="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
@@ -32,7 +32,7 @@
 
         <!-- Show Add Soldier button only for NORTH-ADMIN -->
         
-        <button onclick="openModal('addSoldierModal')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="openModal('addSoldierModal')" class="flex-1 sm:flex-none justify-center bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
             <span>+</span>
             <span data-en="Add Soldier" data-he="הוסף חייל">Add Soldier</span>
         </button>
@@ -58,9 +58,9 @@
        
     </div>
 <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-    <div class="overflow-x-auto">
+    <div>
         <table class="w-full text-left border-collapse" id="soldiersTable">
-            <thead>
+            <thead class="hidden md:table-header-group">
                 <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
                     <th onclick="sortTable(0)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                         <div class="flex items-center justify-between">
@@ -107,17 +107,31 @@
             <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-sm" id="tableBody">
                 {% if soldiers %}
                     {% for s in soldiers %}
-                    <tr class="soldier-row hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition">
-                        <td class="py-3.5 px-4 font-mono text-slate-600 dark:text-slate-400">{{ s.id_number or '' }}</td>
-                        <td class="py-3.5 px-4 font-mono font-semibold text-slate-800 dark:text-slate-200">{{ s.personal_id }}</td>
-                        <td class="py-3.5 px-4 font-medium text-slate-900 dark:text-slate-100">{{ s.full_name }}</td>
-                        <td class="py-3.5 px-4">
+                    <tr class="soldier-row block md:table-row mb-3 md:mb-0 rounded-lg md:rounded-none border border-slate-200 dark:border-slate-700 md:border-0 bg-white dark:bg-slate-800 md:bg-transparent md:dark:bg-transparent shadow-sm md:shadow-none p-3 md:p-0 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition">
+                        <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3.5 md:px-4 font-mono text-slate-600 dark:text-slate-400">
+                            <span class="md:hidden font-sans text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="ID Number" data-he="תעודת זהות">ID Number</span>
+                            <span>{{ s.id_number or '' }}</span>
+                        </td>
+                        <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3.5 md:px-4 font-mono font-semibold text-slate-800 dark:text-slate-200">
+                            <span class="md:hidden font-sans text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Personal ID" data-he="מספר אישי">Personal ID</span>
+                            <span>{{ s.personal_id }}</span>
+                        </td>
+                        <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3.5 md:px-4 font-medium text-slate-900 dark:text-slate-100">
+                            <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Full Name" data-he="שם מלא">Full Name</span>
+                            <span class="text-right break-words">{{ s.full_name }}</span>
+                        </td>
+                        <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3.5 md:px-4">
+                            <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Rank" data-he="דרגה">Rank</span>
                             <span class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium px-2.5 py-1 rounded-md text-xs border border-slate-200 dark:border-slate-600">
                                 {{ s.rank }}
                             </span>
                         </td>
-                        <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">{{ s.job_title }}</td>
-                        <td class="py-3.5 px-4" data-sort="{{ 1 if s.has_driver_license else 0 }}">
+                        <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3.5 md:px-4 text-slate-600 dark:text-slate-300">
+                            <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Job Title" data-he="תפקיד">Job Title</span>
+                            <span class="text-right break-words">{{ s.job_title }}</span>
+                        </td>
+                        <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3.5 md:px-4" data-sort="{{ 1 if s.has_driver_license else 0 }}">
+                            <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Driver's License" data-he="רישיון נהיגה">Driver's License</span>
                             {% if s.has_driver_license %}
                                 <span class="inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs px-2.5 py-1 rounded-full font-medium border border-emerald-200 dark:border-emerald-800">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -132,11 +146,14 @@
                         </td>
                         <!-- Actions Cell only visible for NORTH-ADMIN -->
                         {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
-                        <td class="py-3.5 px-4 text-right space-x-2">
+                        <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3.5 md:px-4 text-right">
+                            <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Actions" data-he="פעולות">Actions</span>
+                            <div class="space-x-2">
                             <button onclick="openModal('editModal-{{ s.id }}')" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 text-xs font-semibold" data-en="Edit" data-he="ערוך">Edit</button>
                             <form action="{{ url_for('soldiers.delete_soldier', id=s.id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to remove this soldier?');">
                                 <button type="submit" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-xs font-semibold" data-en="Delete" data-he="מחק">Delete</button>
                             </form>
+                            </div>
                         </td>
                         {% endif %}
                     </tr>

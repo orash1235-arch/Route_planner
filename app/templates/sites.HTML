@@ -55,9 +55,9 @@
 
     <!-- Sites Table -->
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
-        <div class="overflow-x-auto">
+        <div>
             <table class="w-full text-left border-collapse" id="sitesTable">
-                <thead>
+            <thead class="hidden md:table-header-group">
                     <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
                         <th class="w-8 py-3 px-2"></th>
                         <th onclick="sortTable(1)" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
@@ -92,7 +92,7 @@
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 text-xs text-slate-700 dark:text-slate-300">
                     {% for site in sites %}
                         <!-- Primary Row -->
-                        <tr class="site-row hover:bg-slate-50/80 dark:hover:bg-slate-700/40 cursor-pointer transition select-none"
+                        <tr class="site-row block md:table-row mb-3 md:mb-0 rounded-lg md:rounded-none border border-slate-200 dark:border-slate-700 md:border-0 bg-white dark:bg-slate-800 md:bg-transparent md:dark:bg-transparent shadow-sm md:shadow-none p-3 md:p-0 hover:bg-slate-50/80 dark:hover:bg-slate-700/40 cursor-pointer transition select-none"
                             onclick="toggleDetails('{{ site.loc_id }}')"
                             data-locid="{{ site.loc_id }}"
                             data-name="{{ site.name|e }}"
@@ -101,17 +101,27 @@
                             data-food="{{ site.food or '' }}"
                             data-rating="{{ site.food_rating or '' }}">
                             
-                            <td class="py-3 px-2 text-center text-slate-400">
+                            <td class="hidden md:table-cell py-3 px-2 text-center text-slate-400">
                                 <svg id="chevron-{{ site.loc_id }}" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                 </svg>
                             </td>
-                            <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-indigo-300">{{ site.loc_id }}</td>
-                            <td class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200">{{ site.name }}</td>
-                            <td class="py-3 px-4 font-mono text-slate-600 dark:text-slate-400">{{ site.gpt_coordinates or 'N/A' }}</td>
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4 font-mono font-bold text-slate-900 dark:text-indigo-300">
+                                <span class="md:hidden font-sans text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Location ID" data-he="מזהה מיקום">Location ID</span>
+                                <span>{{ site.loc_id }}</span>
+                            </td>
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4 font-semibold text-slate-800 dark:text-slate-200">
+                                <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Site Name" data-he="שם האתר">Site Name</span>
+                                <span class="text-right break-words">{{ site.name }}</span>
+                            </td>
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4 font-mono text-slate-600 dark:text-slate-400">
+                                <span class="md:hidden font-sans text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="GPS / Coordinates" data-he="קואורדינטות GPS">GPS / Coordinates</span>
+                                <span class="text-right break-all">{{ site.gpt_coordinates or 'N/A' }}</span>
+                            </td>
                             
                             <!-- Sector Column with Glow Effect -->
-                            <td class="py-3 px-4">
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4">
+                                <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Sector" data-he="גזרה">Sector</span>
                                 {% if site.sector == "קו כחול" %}
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 shadow-[0_0_8px_rgba(59,130,246,0.3)]">
                                         {{ site.sector }}
@@ -132,7 +142,8 @@
                             </td>
 
                             {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
-                            <td class="py-3 px-4 text-right" onclick="event.stopPropagation()">
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4 text-right" onclick="event.stopPropagation()">
+                                <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Actions" data-he="פעולות">Actions</span>
                                 <button onclick="openEditModal('{{ site.loc_id }}', '{{ site.name|e }}', '{{ site.gpt_coordinates or '' }}', '{{ site.sector or '' }}', '{{ site.food or '' }}', '{{ site.food_rating or '' }}')" 
                                         class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium" 
                                         data-en="Edit" data-he="ערוך">

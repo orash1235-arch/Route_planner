@@ -11,20 +11,20 @@
                 Manage and view the operational status of all vehicles
             </p>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex w-full sm:w-auto flex-wrap items-center gap-2 sm:gap-3">
             <span class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 border border-transparent dark:border-slate-600">
                 <span data-en="Total Vehicles:" data-he="סה&quot;כ רכבים:">Total Vehicles:</span>
                 <span class="font-bold text-indigo-600 dark:text-indigo-400" id="totalVehicleCount">{{ cars | length }}</span>
             </span>
              {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
-            <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
+            <button onclick="exportToCSV()" class="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 <span data-en="Export CSV" data-he="ייצוא CSV">Export CSV</span>
             </button>
 
             <!-- Show Add button only for NORTH-ADMIN -->
            
-            <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
+            <button onclick="openAddModal()" class="flex-1 sm:flex-none justify-center bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <span>+</span>
                 <span data-en="Add Vehicle" data-he="הוסף רכב">Add Vehicle</span>
             </button>
@@ -42,9 +42,9 @@
 
     <!-- Vehicles Table / List Card -->
     <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors">
-        <div class="overflow-x-auto">
+        <div>
             <table class="w-full text-left border-collapse" id="carsTable">
-                <thead>
+                <thead class="hidden md:table-header-group">
                     <tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
                         <th onclick="sortTable(0, 'string')" class="py-3 px-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition select-none">
                             <div class="flex items-center justify-between">
@@ -84,18 +84,31 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-700 text-xs text-slate-700 dark:text-slate-300">
                     {% for car in cars %}
-                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-700/40 transition"
+                        <tr class="block md:table-row border-b border-slate-200 dark:border-slate-700 last:border-b-0 p-3 md:p-0 hover:bg-slate-50/80 dark:hover:bg-slate-700/40 transition"
                             data-plate="{{ car.license_plate }}"
                             data-model="{{ car.car_type }}"
                             data-km="{{ car.current_km or 0 }}"
                             data-check="{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else '' }}"
                             data-status="{{ car_statuses[car.license_plate] }}">
                             
-                            <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">{{ car.license_plate }}</td>
-                            <td class="py-3 px-4 font-medium">{{ car.car_type }}</td>
-                            <td class="py-3 px-4">{{ "{:,}".format(car.current_km) if car.current_km else '0' }} km</td>
-                            <td class="py-3 px-4 text-slate-500 dark:text-slate-400">{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else 'N/A' }}</td>
-                            <td class="py-3 px-4">
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4 font-mono font-bold text-slate-900 dark:text-white">
+                                <span class="md:hidden font-sans text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="License Plate" data-he="מספר רישוי">License Plate</span>
+                                <span>{{ car.license_plate }}</span>
+                            </td>
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4 font-medium">
+                                <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Vehicle Model" data-he="דגם רכב">Vehicle Model</span>
+                                <span>{{ car.car_type }}</span>
+                            </td>
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4">
+                                <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Current KM" data-he="קילומטראז'">Current KM</span>
+                                <span>{{ "{:,}".format(car.current_km) if car.current_km else '0' }} km</span>
+                            </td>
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4 text-slate-500 dark:text-slate-400">
+                                <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Last Garage Check" data-he="בדיקת מוסך אחרונה">Last Garage Check</span>
+                                <span>{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else 'N/A' }}</span>
+                            </td>
+                            <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4">
+                                <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Status" data-he="סטטוס">Status</span>
                                 {% if car_statuses[car.license_plate] == 'On Ride' %}
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60">
                                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
@@ -115,7 +128,8 @@
                             </td>
                             <!-- Show Edit action button only for NORTH-ADMIN -->
                            {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
-<td class="py-3 px-4 text-right">
+<td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4 text-right">
+    <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Actions" data-he="פעולות">Actions</span>
     <div class="flex items-center justify-end gap-3">
         <!-- Edit Button -->
         <button onclick="openEditModal('{{ car.license_plate }}', '{{ car.car_type }}', '{{ car.current_km or 0 }}', '{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else '' }}')" 
