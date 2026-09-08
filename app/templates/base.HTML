@@ -59,8 +59,8 @@
             {% if current_user.is_authenticated %}
                 <div class="relative">
                     <!-- Integrated User Profile & Settings Trigger Button -->
-                    <button id="settingsBtn" class="flex items-center space-x-2 sm:space-x-3 bg-slate-800 hover:bg-slate-700 px-2 sm:px-3 py-1.5 rounded-lg border border-slate-700 transition focus:outline-none" title="User Settings">
-                        <div class="relative w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-xs border border-indigo-400 group">
+                    <button id="settingsBtn" class="flex items-center gap-2 sm:gap-3 bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg border border-slate-700 transition focus:outline-none" title="User Settings">
+                        <div class="relative w-8 h-8 shrink-0 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-xs border border-indigo-400 group">
                             <!-- User Initial -->
                             <span class="group-hover:opacity-20 transition-opacity">
                                 {{ (current_user.full_name or current_user.id)[0] | upper }}
@@ -71,7 +71,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                         </div>
-                        <div class="text-right leading-tight hidden sm:block">
+                        <div class="text-right leading-tight hidden sm:block min-w-0">
                             <p class="text-xs font-bold text-white">{{ current_user.full_name or current_user.id }}</p>
                             <p class="text-[10px] text-slate-400">ID: {{ current_user.id }}</p>
                             {% if current_user.used_invitation_code %}
@@ -117,11 +117,18 @@
                                     </svg>
                                 </div>
                             </div>
+
+                            <div class="border-t border-slate-700 pt-3">
+                                <a href="{{ url_for('auth.logout') }}" onclick="return confirm('Are you sure you want to log out?');" class="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-slate-300 hover:bg-slate-700 hover:text-white transition" data-en="Logout" data-he="התנתק">
+                                    <span data-en="Logout" data-he="התנתק">Logout</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H9m4-4V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2v-2"></path>
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <a href="{{ url_for('auth.logout') }}" class="text-xs text-slate-400 hover:text-white transition ml-2" data-en="Logout" data-he="התנתק">Logout</a>
             {% else %}
                 <div class="space-x-2 text-xs">
                     {% if request.endpoint == 'auth.login' %}
