@@ -289,6 +289,12 @@ def render_ride_form(ride=None):
     all_sites = Site.query.order_by(Site.name.asc()).all()
     soldiers = Soldier.query.order_by(Soldier.full_name.asc()).all()
     car_statuses = get_car_statuses(cars)
+    car_ride_dates = {car.license_plate: [] for car in cars}
+    for license_plate, departure_date in db.session.query(
+        Trip.car_license_plate, Trip.departure_date
+    ).filter(Trip.is_draft == False).all():
+        if license_plate in car_ride_dates and departure_date:
+            car_ride_dates[license_plate].append(departure_date.isoformat())
 
     return render_template(
         'new_ride.html',
@@ -302,7 +308,8 @@ def render_ride_form(ride=None):
         drivers=drivers,
         soldiers=soldiers,
         sites=all_sites,
-        car_statuses=car_statuses
+        car_statuses=car_statuses,
+        car_ride_dates=car_ride_dates
     )
 
 

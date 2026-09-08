@@ -79,11 +79,17 @@ def edit_car(license_plate):
     
     car.car_type = request.form.get('car_type', car.car_type)
     car.current_km = request.form.get('current_km', type=int) or 0
+    requested_status = request.form.get('status')
     
     last_garage_check_str = request.form.get('last_garage_check')
     if last_garage_check_str:
         car.last_garage_check = datetime.strptime(last_garage_check_str, '%Y-%m-%d').date()
     else:
+        car.last_garage_check = None
+
+    if requested_status == 'At Garage':
+        car.last_garage_check = date.today()
+    elif requested_status == 'Available' and car.last_garage_check == date.today():
         car.last_garage_check = None
         
     db.session.commit()

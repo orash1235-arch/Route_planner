@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <form id="expedition-form" action="{{ url_for('trips.edit_ride', trip_id=ride.id) if edit_mode else url_for('trips.new_ride') }}" method="POST" class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-8 space-y-6 sm:space-y-8">
+    <form id="expedition-form" data-today="{{ min_date }}" action="{{ url_for('trips.edit_ride', trip_id=ride.id) if edit_mode else url_for('trips.new_ride') }}" method="POST" class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 sm:p-8 space-y-6 sm:space-y-8">
         
         <!-- Section 1: General Info -->
         <section class="space-y-4">
@@ -33,7 +33,7 @@
                         <select id="car-select" name="license_plate" required onchange="handleCarSelect(this)" class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
                             <option value="" disabled {% if not ride %}selected{% endif %} data-en="-- Select a vehicle from fleet --" data-he="-- בחר רכב --">-- Select a vehicle from fleet --</option>
                             {% for car in cars %}
-                                <option value="{{ car.license_plate }}" data-status="{{ car_statuses[car.license_plate] }}" {% if ride and ride.car_license_plate == car.license_plate %}selected{% endif %}>
+                                <option value="{{ car.license_plate }}" data-status="{{ car_statuses[car.license_plate] }}" data-ride-dates='{{ car_ride_dates[car.license_plate] | tojson }}' {% if ride and ride.car_license_plate == car.license_plate %}selected{% endif %}>
                                     {{ car.car_type }} — [{{ car.license_plate }}]
                                 </option>
                             {% endfor %}
@@ -53,7 +53,7 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5" data-en="Departure Date *" data-he="תאריך יציאה *">Departure Date *</label>
-                    <input type="date" name="departure_date" value="{{ ride.departure_date.isoformat() if ride else '' }}" min="{{ min_date }}" required class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <input id="departure-date" type="date" name="departure_date" value="{{ ride.departure_date.isoformat() if ride else '' }}" min="{{ min_date }}" required class="w-full text-sm p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
 
                 <div>
@@ -261,11 +261,13 @@
         const selectedOption = selectElement.options[selectElement.selectedIndex];
         const wrapper = document.getElementById('car-select-wrapper');
         const status = selectedOption.getAttribute('data-status');
+        const departureDate = document.getElementById('departure-date').value;
+        const rideDates = JSON.parse(selectedOption.getAttribute('data-ride-dates') || '[]');
 
         selectElement.classList.remove('border-rose-500', 'border-emerald-500');
         wrapper.className = 'relative rounded-lg transition-all duration-300';
 
-        if (status === 'On Ride') {
+        if (departureDate && rideDates.includes(departureDate)) {
             selectElement.classList.add('border-rose-500');
             wrapper.classList.add('ring-4', 'ring-rose-500/20', 'shadow-md', 'shadow-rose-500/10');
         } else if (status === 'Available') {
@@ -276,5 +278,27 @@
             wrapper.classList.add('ring-4', 'ring-amber-500/20', 'shadow-md', 'shadow-amber-500/10');
         }
     }
+
+    document.getElementById('departure-date').addEventListener('change', () => {
+        handleCarSelect(document.getElementById('car-select'));
+    });
+
+    if (document.getElementById('car-select').value) {
+        handleCarSelect(document.getElementById('car-select'));
+    }
+
+    document.getElementById('expedition-form').addEventListener('submit', (event) => {
+        const form = event.currentTarget;
+        const carSelect = document.getElementById('car-select');
+        const selectedOption = carSelect.options[carSelect.selectedIndex];
+        const departureDate = document.getElementById('departure-date').value;
+
+        if (!{{ 'true' if edit_mode else 'false' }} &&
+            selectedOption && selectedOption.dataset.status === 'At Garage' &&
+            departureDate === form.dataset.today &&
+            !window.confirm('This vehicle is marked as At Garage today. Continue with this ride?')) {
+            event.preventDefault();
+        }
+    });
 </script>
 {% endblock %}

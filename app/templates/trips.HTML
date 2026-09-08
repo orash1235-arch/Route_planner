@@ -116,8 +116,13 @@
         <!-- Card Header: License Plate & Commander -->
         <div class="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-start mb-3 pb-3 border-b border-slate-100 dark:border-slate-700">
             <div>
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400" data-en="Trip ID (Plate)" data-he="זיהוי נסיעה">Trip ID (Plate)</span>
-                <h3 class="font-bold text-xl text-slate-900 dark:text-slate-100 font-mono">{{ ride.car_license_plate }}</h3>
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400" data-en="License Plate" data-he="לוחית רישוי">License Plate</span>
+                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-slate-100 font-mono">{{ ride.car_license_plate }}</h3>
+                    {% if ride.car %}
+                    <span class="text-xs text-slate-500 dark:text-slate-400 font-sans">{{ ride.car.car_type }}</span>
+                    {% endif %}
+                </div>
             </div>
             <div class="text-left sm:text-right">
                 <span class="text-xs text-slate-500 dark:text-slate-400 block" data-en="Expedition Commander" data-he="מפקד משלח">Expedition Commander</span>

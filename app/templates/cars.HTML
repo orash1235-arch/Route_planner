@@ -105,7 +105,7 @@
                             </td>
                             <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4 text-slate-500 dark:text-slate-400">
                                 <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Last Garage Check" data-he="בדיקת מוסך אחרונה">Last Garage Check</span>
-                                <span>{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else 'N/A' }}</span>
+                                <span>{{ car.last_garage_check.strftime('%d-%m-%y') if car.last_garage_check else 'N/A' }}</span>
                             </td>
                             <td class="flex md:table-cell items-center justify-between gap-4 py-2 px-0 md:py-3 md:px-4">
                                 <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Status" data-he="סטטוס">Status</span>
@@ -132,7 +132,7 @@
     <span class="md:hidden text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Actions" data-he="פעולות">Actions</span>
     <div class="flex items-center justify-end gap-3">
         <!-- Edit Button -->
-        <button onclick="openEditModal('{{ car.license_plate }}', '{{ car.car_type }}', '{{ car.current_km or 0 }}', '{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else '' }}')" 
+        <button onclick="openEditModal('{{ car.license_plate }}', '{{ car.car_type }}', '{{ car.current_km or 0 }}', '{{ car.last_garage_check.strftime('%Y-%m-%d') if car.last_garage_check else '' }}', '{{ car_statuses[car.license_plate] }}')"
                 class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 font-medium transition" 
                 data-en="Edit" data-he="ערוך">
             Edit
@@ -220,6 +220,13 @@
                 <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Last Garage Check" data-he="בדיקת מוסך אחרונה">Last Garage Check</label>
                 <input type="date" name="last_garage_check" id="edit_last_garage_check" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             </div>
+            <div>
+                <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1" data-en="Vehicle Status" data-he="סטטוס רכב">Vehicle Status</label>
+                <select name="status" id="edit_status" class="w-full p-2.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <option value="Available" data-en="Available" data-he="זמין">Available</option>
+                    <option value="At Garage" data-en="At Garage" data-he="במוסך">At Garage</option>
+                </select>
+            </div>
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
                 <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium" data-en="Cancel" data-he="ביטול">Cancel</button>
                 <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium" data-en="Update Vehicle" data-he="עדכן רכב">Update Vehicle</button>
@@ -239,11 +246,12 @@
         document.getElementById('addCarModal').classList.remove('flex');
     }
 
-    function openEditModal(plate, model, km, checkDate) {
+    function openEditModal(plate, model, km, checkDate, status) {
         document.getElementById('edit_license_plate').value = plate;
         document.getElementById('edit_car_type').value = model;
         document.getElementById('edit_current_km').value = km;
         document.getElementById('edit_last_garage_check').value = checkDate;
+        document.getElementById('edit_status').value = status === 'At Garage' ? 'At Garage' : 'Available';
 
         document.getElementById('editCarForm').action = "/cars/edit/" + encodeURIComponent(plate);
 
