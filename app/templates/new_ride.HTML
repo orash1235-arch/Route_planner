@@ -183,14 +183,12 @@
                 Cancel
             </a>
             
-            {% if not edit_mode %}
-            <button type="submit" name="action" value="draft" formnovalidate class="px-4 py-3 text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg shadow-2xs transition cursor-pointer" data-en="Save as Draft" data-he="שמור כטיוטה">
+            <button type="submit" name="action" value="draft" class="px-4 py-3 text-xs font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg shadow-2xs transition cursor-pointer" data-en="Save as Draft" data-he="שמור כטיוטה">
                 Save as Draft
             </button>
-            {% endif %}
 
-            <button type="submit" name="action" value="publish" class="px-6 py-3 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-xs transition cursor-pointer" data-en="{{ 'Update Ride' if edit_mode else 'Save Expedition' }}" data-he="{{ 'עדכן נסיעה' if edit_mode else 'שמור נסיעה' }}">
-                {{ 'Update Ride' if edit_mode else 'Save Expedition' }}
+            <button type="submit" name="action" value="publish" class="px-6 py-3 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-xs transition cursor-pointer" data-en="{{ 'Update Ride' if edit_mode and not ride.is_draft else 'Save Expedition' if not edit_mode else 'Publish Ride' }}" data-he="{{ 'עדכן נסיעה' if edit_mode and not ride.is_draft else 'שמור נסיעה' if not edit_mode else 'פרסם נסיעה' }}">
+                {{ 'Update Ride' if edit_mode and not ride.is_draft else 'Save Expedition' if not edit_mode else 'Publish Ride' }}
             </button>
         </div>
 

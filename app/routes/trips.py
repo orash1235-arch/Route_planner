@@ -143,6 +143,7 @@ def edit_ride(trip_id):
         return redirect(url_for('trips.list_trips'))
 
     if request.method == 'POST':
+        is_draft = request.form.get('action') == 'draft'
         license_plate = request.form.get('license_plate')
         commander = request.form.get('commander')
         driver = request.form.get('driver')
@@ -163,6 +164,7 @@ def edit_ride(trip_id):
         ride.departure_time = departure_time
         ride.est_duration = float(request.form.get('est_duration')) if request.form.get('est_duration') else None
         ride.notes = request.form.get('notes')
+        ride.is_draft = is_draft
 
         TripSite.query.filter_by(trip_id=ride.id).delete()
         for name, difficulty, desc in zip(
@@ -179,7 +181,7 @@ def edit_ride(trip_id):
                 ))
 
         db.session.commit()
-        flash("Ride updated successfully!", "success")
+        flash("Ride saved as a draft." if is_draft else "Ride published successfully!", "info" if is_draft else "success")
         return redirect(url_for('trips.list_trips'))
 
     return render_ride_form(ride)
