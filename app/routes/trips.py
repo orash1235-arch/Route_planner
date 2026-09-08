@@ -143,6 +143,9 @@ def new_ride():
             return redirect(url_for('trips.new_ride'))
         
         parsed_date = datetime.strptime(date_str, '%Y-%m-%d').date() if date_str else None
+        if parsed_date < date.today():
+            flash("Rides cannot be created for a date that has already passed.", "danger")
+            return redirect(url_for('trips.new_ride'))
         passengers = ', '.join(request.form.getlist('passengers[]'))
 
         new_trip = Trip(
@@ -218,12 +221,17 @@ def edit_ride(trip_id):
             flash("Vehicle, commander, driver, supervisor, date, and time are required.", "danger")
             return redirect(url_for('trips.edit_ride', trip_id=trip_id))
 
+        parsed_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        if parsed_date < date.today():
+            flash("Rides cannot be saved for a date that has already passed.", "danger")
+            return redirect(url_for('trips.edit_ride', trip_id=trip_id))
+
         ride.car_license_plate = license_plate
         ride.commander = commander
         ride.driver = driver
         ride.supervisor = supervisor
         ride.passengers = ', '.join(request.form.getlist('passengers[]')) or None
-        ride.departure_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        ride.departure_date = parsed_date
         ride.departure_time = departure_time
         ride.est_duration = float(request.form.get('est_duration')) if request.form.get('est_duration') else None
         ride.notes = request.form.get('notes')
@@ -288,6 +296,7 @@ def render_ride_form(ride=None):
         edit_mode=ride is not None,
         selected_passengers=ride.passengers.split(', ') if ride and ride.passengers else [],
         assigned_sites=ride.assigned_sites if ride else [],
+        min_date=date.today().isoformat(),
         cars=cars,
         commanders=commanders,
         drivers=drivers,
