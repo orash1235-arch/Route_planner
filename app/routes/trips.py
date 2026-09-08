@@ -17,6 +17,7 @@ def list_trips():
     upcoming_end = today + timedelta(days=6)
     history_start = today - timedelta(days=7)
     selected_date = None
+    ride_dates = []
 
     if selected_view == 'drafts':
         if not current_user.is_authenticated or current_user.used_invitation_code != "NORTH-ADMIN":
@@ -93,12 +94,30 @@ def list_trips():
         ).order_by(
             Trip.departure_date.asc(), Trip.departure_time.asc()
         ).all()
+
+    if selected_view == 'history':
+        ride_dates = [row[0] for row in db.session.query(Trip.departure_date).filter(
+            Trip.is_draft == False,
+            Trip.departure_date < today
+        ).distinct().order_by(Trip.departure_date.desc()).all()]
+    elif selected_view == 'mine' and current_user.is_authenticated:
+        assigned_soldier = Soldier.query.filter_by(id_number=current_user.id).first()
+        if assigned_soldier:
+            ride_dates = [row[0] for row in db.session.query(Trip.departure_date).filter(
+                Trip.is_draft == False,
+                or_(
+                    Trip.driver == assigned_soldier.full_name,
+                    Trip.supervisor == assigned_soldier.full_name,
+                    Trip.commander == assigned_soldier.full_name
+                )
+            ).distinct().order_by(Trip.departure_date.desc()).all()]
     
     return render_template(
         'trips.html',
         rides=rides,
         selected_view=selected_view,
         today=today,
+        ride_dates=ride_dates,
         history_last_date=(today - timedelta(days=1)).isoformat(),
         calendar_date=(selected_date or (today - timedelta(days=1))).isoformat()
     )

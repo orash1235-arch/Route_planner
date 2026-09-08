@@ -71,6 +71,23 @@
             </div>
             <button type="submit" class="px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold" data-en="Open Date" data-he="פתח תאריך">Open Date</button>
         </form>
+        <div class="mt-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+            <div class="flex items-center justify-between gap-3 mb-2">
+                <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400" data-en="Dates with rides" data-he="תאריכים עם נסיעות">Dates with rides</p>
+                <span class="text-[10px] text-slate-400 dark:text-slate-500">{{ ride_dates|length }}</span>
+            </div>
+            <div class="max-h-28 overflow-y-auto pr-1">
+            <div class="flex flex-wrap gap-1.5">
+                {% for ride_date in ride_dates %}
+                <a href="{{ url_for('trips.list_trips', view=selected_view, date=ride_date.isoformat()) }}" class="px-2 py-1 rounded-md text-[10px] font-semibold transition {% if request.args.get('date') == ride_date.isoformat() %}bg-indigo-600 text-white{% else %}bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50{% endif %}" title="{{ ride_date.strftime('%d-%m-%Y') }}">
+                    {{ ride_date.strftime('%d-%m-%Y') }}
+                </a>
+                {% else %}
+                <span class="text-[11px] text-slate-400 dark:text-slate-500" data-en="No other dates with rides" data-he="אין תאריכים נוספים עם נסיעות">No other dates with rides</span>
+                {% endfor %}
+            </div>
+            </div>
+        </div>
         {% endif %}
 
         <!-- Dynamic Cards Grid Container -->
