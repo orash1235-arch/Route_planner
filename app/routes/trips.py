@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, g
 from sqlalchemy import or_, and_
 from app import db
@@ -13,6 +13,10 @@ trips_bp = Blueprint('trips', __name__, url_prefix='/trips')
 @trips_bp.route('/', methods=['GET'])
 def list_trips():
     selected_view = request.args.get('view', 'all')
+    today = date.today()
+    upcoming_end = today + timedelta(days=6)
+    history_start = today - timedelta(days=7)
+    selected_date = None
 
     if selected_view == 'drafts':
         if not current_user.is_authenticated or current_user.used_invitation_code != "NORTH-ADMIN":
@@ -23,21 +27,54 @@ def list_trips():
             Trip.is_draft == True
         ).order_by(Trip.departure_date.asc(), Trip.departure_time.asc()).all()
     elif selected_view == 'history':
-        rides = Trip.query.filter(
-            Trip.is_draft == False,
-            Trip.departure_date < date.today()
-        ).order_by(Trip.departure_date.desc(), Trip.departure_time.desc()).all()
+        date_value = request.args.get('date')
+        if date_value:
+            try:
+                selected_date = datetime.strptime(date_value, '%Y-%m-%d').date()
+            except ValueError:
+                flash("Invalid history date. Showing the previous seven days.", "warning")
+
+        if selected_date:
+            rides = Trip.query.filter(
+                Trip.is_draft == False,
+                Trip.departure_date == selected_date,
+                Trip.departure_date < today
+            ).order_by(Trip.departure_time.desc()).all()
+        else:
+            rides = Trip.query.filter(
+                Trip.is_draft == False,
+                Trip.departure_date >= history_start,
+                Trip.departure_date < today
+            ).order_by(Trip.departure_date.desc(), Trip.departure_time.desc()).all()
     elif selected_view == 'mine' and current_user.is_authenticated:
+        date_value = request.args.get('date')
+        if date_value:
+            try:
+                selected_date = datetime.strptime(date_value, '%Y-%m-%d').date()
+            except ValueError:
+                flash("Invalid ride date. Showing your upcoming rides.", "warning")
+
         assigned_soldier = Soldier.query.filter_by(id_number=current_user.id).first()
         if assigned_soldier:
-            rides = Trip.query.filter(
+            mine_filters = [
                 Trip.is_draft == False,
                 or_(
                     Trip.driver == assigned_soldier.full_name,
                     Trip.supervisor == assigned_soldier.full_name,
                     Trip.commander == assigned_soldier.full_name
                 )
-            ).order_by(Trip.departure_date.asc(), Trip.departure_time.asc()).all()
+            ]
+            if selected_date:
+                mine_filters.append(Trip.departure_date == selected_date)
+            else:
+                mine_filters.extend([
+                    Trip.departure_date >= today,
+                    Trip.departure_date <= upcoming_end
+                ])
+
+            rides = Trip.query.filter(*mine_filters).order_by(
+                Trip.departure_date.asc(), Trip.departure_time.asc()
+            ).all()
         else:
             rides = []
     elif current_user.is_authenticated:
@@ -45,19 +82,26 @@ def list_trips():
         selected_view = 'all'
         rides = Trip.query.filter(
             Trip.is_draft == False,
-            Trip.departure_date >= date.today(),
+            Trip.departure_date >= today,
         ).order_by(Trip.departure_date.asc(), Trip.departure_time.asc()).all()
     else:
         # Unauthenticated users only see published trips
         selected_view = 'all'
         rides = Trip.query.filter(
             Trip.is_draft == False,
-            Trip.departure_date >= date.today()
+            Trip.departure_date >= today
         ).order_by(
             Trip.departure_date.asc(), Trip.departure_time.asc()
         ).all()
     
-    return render_template('trips.html', rides=rides, selected_view=selected_view, today=date.today())
+    return render_template(
+        'trips.html',
+        rides=rides,
+        selected_view=selected_view,
+        today=today,
+        history_last_date=(today - timedelta(days=1)).isoformat(),
+        calendar_date=(selected_date or (today - timedelta(days=1))).isoformat()
+    )
 
 @trips_bp.route('/new', methods=['GET', 'POST'])
 @login_required
@@ -185,6 +229,24 @@ def edit_ride(trip_id):
         return redirect(url_for('trips.list_trips'))
 
     return render_ride_form(ride)
+
+
+@trips_bp.route('/delete/<int:trip_id>', methods=['POST'])
+@login_required
+def delete_ride(trip_id):
+    if current_user.used_invitation_code != "NORTH-ADMIN":
+        flash("Permission denied. Only admin users can delete rides.", "danger")
+        return redirect(url_for('trips.list_trips'))
+
+    ride = Trip.query.get_or_404(trip_id)
+    if not ride.is_draft and (not ride.departure_date or ride.departure_date < date.today()):
+        flash("Only current, upcoming, or draft rides can be deleted.", "warning")
+        return redirect(url_for('trips.list_trips'))
+
+    db.session.delete(ride)
+    db.session.commit()
+    flash("Ride deleted successfully.", "success")
+    return redirect(url_for('trips.list_trips'))
 
 
 def render_ride_form(ride=None):
