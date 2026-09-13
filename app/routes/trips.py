@@ -15,9 +15,12 @@ def list_trips():
     selected_view = request.args.get('view', 'all')
     today = date.today()
     upcoming_end = today + timedelta(days=6)
-    history_start = today - timedelta(days=7)
+    history_page_size = 3
+    history_page = max(request.args.get('page', 1, type=int), 1)
     selected_date = None
     ride_dates = []
+    history_total = 0
+    history_total_pages = 1
 
     if selected_view == 'drafts':
         if not current_user.is_authenticated or current_user.used_invitation_code != "NORTH-ADMIN":
@@ -35,18 +38,19 @@ def list_trips():
             except ValueError:
                 flash("Invalid history date. Showing the previous seven days.", "warning")
 
+        history_query = Trip.query.filter(
+            Trip.is_draft == False,
+            Trip.departure_date < today
+        )
         if selected_date:
-            rides = Trip.query.filter(
-                Trip.is_draft == False,
-                Trip.departure_date == selected_date,
-                Trip.departure_date < today
-            ).order_by(Trip.departure_time.desc()).all()
-        else:
-            rides = Trip.query.filter(
-                Trip.is_draft == False,
-                Trip.departure_date >= history_start,
-                Trip.departure_date < today
-            ).order_by(Trip.departure_date.desc(), Trip.departure_time.desc()).all()
+            history_query = history_query.filter(Trip.departure_date == selected_date)
+
+        history_total = history_query.count()
+        history_total_pages = max((history_total + history_page_size - 1) // history_page_size, 1)
+        history_page = min(history_page, history_total_pages)
+        rides = history_query.order_by(
+            Trip.departure_date.desc(), Trip.departure_time.desc()
+        ).offset((history_page - 1) * history_page_size).limit(history_page_size).all()
     elif selected_view == 'mine' and current_user.is_authenticated:
         date_value = request.args.get('date')
         if date_value:
@@ -118,6 +122,10 @@ def list_trips():
         selected_view=selected_view,
         today=today,
         ride_dates=ride_dates,
+        history_page=history_page,
+        history_page_size=history_page_size,
+        history_total=history_total,
+        history_total_pages=history_total_pages,
         history_last_date=(today - timedelta(days=1)).isoformat(),
         calendar_date=(selected_date or (today - timedelta(days=1))).isoformat()
     )
