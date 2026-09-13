@@ -17,7 +17,7 @@
                 <span class="font-bold text-indigo-600 dark:text-indigo-400" id="totalSitesCount">{{ sites | length }}</span>
             </span>
 
-           
+           {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
 
             <!-- Export to CSV Button -->
             <button onclick="exportSitesToCSV()" class="bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
@@ -25,7 +25,7 @@
                 <span data-en="Export CSV" data-he="ייצוא CSV">Export CSV</span>
             </button>
 
-            {% if current_user.used_invitation_code == 'NORTH-ADMIN' %}
+            
             <!-- Add Site Button -->
             <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 shadow-sm">
                 <span>+</span>
