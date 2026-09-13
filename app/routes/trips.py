@@ -11,6 +11,7 @@ trips_bp = Blueprint('trips', __name__, url_prefix='/trips')
 
 
 @trips_bp.route('/', methods=['GET'])
+@login_required
 def list_trips():
     selected_view = request.args.get('view', 'all')
     today = date.today()
@@ -322,6 +323,7 @@ def render_ride_form(ride=None):
 
 
 @trips_bp.route('/<int:trip_id>', methods=['GET'])
+@login_required
 def view_trip(trip_id):
     trip = Trip.query.get_or_404(trip_id)
     return render_template('view_trip.html', trip=trip)

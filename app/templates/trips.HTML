@@ -9,7 +9,7 @@
           <nav class="flex items-center gap-1 overflow-x-auto bg-white dark:bg-slate-800 p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm" aria-label="Trip views">
                 <a href="{{ url_for('trips.list_trips', view='all') }}"
                     class="px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition {% if selected_view == 'all' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700{% endif %}"
-                    data-en="Active Rides" data-he="נסיעות פעילות">Active Rides</a>
+                    data-en="All Rides" data-he="כל הנסיעות ">Active Rides</a>
                 {% if current_user.is_authenticated %}
                 <a href="{{ url_for('trips.list_trips', view='mine') }}"
                     class="px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition {% if selected_view == 'mine' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700{% endif %}"
@@ -35,7 +35,7 @@
             <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100" data-en="My Rides" data-he="הנסיעות שלי">My Rides</h2>
             <p class="text-xs text-slate-500 dark:text-slate-400" data-en="Rides where you are assigned as crew" data-he="נסיעות שבהן אתה משובץ כחלק מהצוות">Rides where you are assigned as crew</p>
             {% else %}
-            <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100" data-en="Active Rides" data-he="נסיעות פעילות">Active Rides</h2>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100" data-en="All Rides" data-he="כל הנסיעות">All Rides</h2>
             <p class="text-xs text-slate-500 dark:text-slate-400" data-en="Manage planned trips and site assignments" data-he="ניהול נסיעות ומשימות אבטחה/אתרים">Manage planned trips and site assignments</p>
             {% endif %}
             </div>
